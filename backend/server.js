@@ -24,6 +24,14 @@ connection.once('open', () => {
 const exercisesRouter = require('./routes/exercises');
 const workoutNamesRouter = require('./routes/workoutNames');
 
+// Import routes
+const cardioExercisesRouter = require('./routes/cardioExercises');
+const strengthExercisesRouter = require('./routes/strengthExercises');
+
+// Use routes with specified URLs
+app.use('/cardioExercises', cardioExercisesRouter);
+app.use('/strengthExercises', strengthExercisesRouter);
+
 //loads these files with specified url
 app.use('/exercises', exercisesRouter);
 app.use('/name', workoutNamesRouter);

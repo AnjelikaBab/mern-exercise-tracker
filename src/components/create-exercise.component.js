@@ -19,8 +19,6 @@ export default class CreateExercise extends Component {
     this.state = {
       workoutName: '',
       workoutType: '',
-      description: '',
-      duration: 0,
       date: new Date(),
       workouts: [],
       incline: '',
@@ -100,29 +98,49 @@ export default class CreateExercise extends Component {
       sets: prevState.sets.filter((_, i) => i !== index)
     }));
   }
-
   onSubmit(e) {
     e.preventDefault();
-
-    const exercise = {
+  
+    // Initialize the base exercise object
+    let exercise = {
       workoutName: this.state.workoutName,
-      workoutType: this.state.workoutType,
-      description: this.state.description,
-      duration: this.state.duration,
-      date: this.state.date,
-      incline: this.state.incline,
-      distance: this.state.distance,
-      speed: this.state.speed,
-      time: this.state.time,
-      sets: this.state.sets
+      date: this.state.date
     };
-
+  
+    // Conditionally add fields based on workout type
+    if (this.state.workoutType === 'Cardio') {
+      exercise = {
+        ...exercise,
+        incline: this.state.incline,
+        distance: this.state.distance,
+        speed: this.state.speed,
+        time: this.state.time
+      };
+  
+      // URL for Cardio exercises
+      var url = 'http://localhost:5001/cardioexercises/add';
+  
+    } else if (this.state.workoutType === 'Strength') {
+      exercise = {
+        ...exercise,
+        sets: this.state.sets
+      };
+  
+      // URL for Strength exercises
+      var url = 'http://localhost:5001/strengthexercises/add';
+  
+    } else {
+      console.error('Unknown workout type');
+      return;
+    }
+  
     console.log(exercise);
-
-    axios.post('http://localhost:5001/exercises/add', exercise)
+  
+    axios.post(url, exercise)
       .then(res => console.log(res.data))
       .catch(err => console.error('Error: ' + err));
   }
+  
 
   render() {
     return (
