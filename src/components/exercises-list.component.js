@@ -55,7 +55,7 @@ export default class ExercisesList extends Component {
         <table className="table">
           <thead className="thead-light">
             <tr>
-              <th>Username</th>
+              <th>Workout Name</th>
               <th>Description</th>
               <th>Duration</th>
               <th>Date</th>

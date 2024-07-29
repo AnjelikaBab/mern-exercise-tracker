@@ -1,25 +1,66 @@
+/* Navbar.css */
 .custom-navbar {
     background-color: #ff69b4; /* Pink color */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column; /* Stack items vertically by default */
+    align-items: center; /* Center items horizontally */
+    padding: 10px;
   }
   
   .navbar-brand {
     font-family: 'Pacifico', cursive; /* Prettier font for the brand */
     font-size: 1.5rem;
     color: #ffffff;
+    margin-bottom: 10px; /* Add spacing below the brand */
+  }
+  
+  .navbar-content {
+    display: flex;
+    flex-direction: column; /* Stack items vertically by default */
+    width: 100%;
+  }
+  
+  .navbar-nav {
+    display: flex;
+    flex-direction: column; /* Stack items vertically by default */
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+  }
+  
+  .navbar-item {
+    margin: 5px 0; /* Add vertical spacing between items */
   }
   
   .navbar-nav .nav-link {
     color: #ffffff;
     font-weight: bold;
     transition: color 0.3s ease;
+    text-decoration: none; /* Remove underline from links */
   }
   
   .navbar-nav .nav-link:hover {
     color: #ff1493; /* Darker pink on hover */
   }
   
-  .navbar-item {
-    margin-right: 15px;
+  /* Responsive styling */
+  @media (min-width: 768px) {
+    .custom-navbar {
+      flex-direction: row; /* Align items horizontally on larger screens */
+      justify-content: space-between; /* Space items between left and right */
+    }
+  
+    .navbar-content {
+      flex-direction: row; /* Align items horizontally */
+    }
+  
+    .navbar-nav {
+      flex-direction: row; /* Align items horizontally */
+    }
+  
+    .navbar-item {
+      margin: 0 15px; /* Add horizontal spacing between items */
+    }
   }
   

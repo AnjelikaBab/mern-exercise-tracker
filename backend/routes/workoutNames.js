@@ -1,23 +1,34 @@
 const router = require('express').Router();
-let Workout = require('../models/workoutName.model');
+const Workout = require('../models/workoutName.model');
 
-//first endpoint that  handles incoming http get requests on the /users url path
+// Get all workouts
 router.route('/').get((req, res) => {
-    //get all users from database
     Workout.find()
-  //return in json format, the users we got from the database
-    .then(workouts => res.json(workouts))
-    .catch(err => res.status(400).json('Error: ' + err));
+        .then(workouts => res.json(workouts))
+        .catch(err => res.status(400).json('Error: ' + err));
 });
 
+// Get workout by name
+router.route('/:workoutName').get((req, res) => {
+    const { workoutName } = req.params;
+    Workout.findOne({ workoutName })
+        .then(workout => {
+            if (!workout) {
+                return res.status(404).json('Workout not found');
+            }
+            res.json(workout);
+        })
+        .catch(err => res.status(400).json('Error: ' + err));
+});
+
+// Add new workout
 router.route('/add').post((req, res) => {
-  const workoutName = req.body.workoutName;
+    const { workoutName, workoutType } = req.body;
+    const newWorkout = new Workout({ workoutName, workoutType });
 
-  const newWorkout = new Workout({workoutName});
-
-  newWorkout.save()
-    .then(() => res.json('Workout Name added!'))
-    .catch(err => res.status(400).json('Error: ' + err));
+    newWorkout.save()
+        .then(() => res.json('Workout Name added!'))
+        .catch(err => res.status(400).json('Error: ' + err));
 });
 
 module.exports = router;
