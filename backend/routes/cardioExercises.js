@@ -14,4 +14,61 @@ router.post('/add', async (req, res) => {
   }
 });
 
+router.route('/').get((req, res) => {
+    CardioExercise.find()
+        .then(ce => res.json(ce))
+        .catch(err => res.status(400).json('Error: ' + err));
+});
+
+// Existing imports and routes...
+
+// Delete a cardio exercise
+router.delete('/:id', async (req, res) => {
+    try {
+      await CardioExercise.findByIdAndDelete(req.params.id);
+      res.json('Cardio Exercise deleted.');
+    } catch (err) {
+      res.status(400).json('Error: ' + err);
+    }
+  });
+
+  // GET route to retrieve a CardioExercise by ID
+router.get('/:id', async (req, res) => {
+    try {
+      const exercise = await CardioExercise.findById(req.params.id);
+      
+      if (!exercise) {
+        return res.status(404).json('Cardio Exercise not found.');
+      }
+  
+      res.json(exercise);
+    } catch (err) {
+      res.status(400).json('Error: ' + err);
+    }
+  });
+  
+  // Update a cardio exercise
+  router.post('/update/:id', async (req, res) => {
+    try {
+      const exercise = await CardioExercise.findById(req.params.id);
+  
+      if (!exercise) return res.status(404).json('Cardio Exercise not found');
+  
+      exercise.workoutName = req.body.workoutName;
+      exercise.date = Date.parse(req.body.date);
+      exercise.incline = Number(req.body.incline);
+      exercise.distance = Number(req.body.distance);
+      exercise.speed = Number(req.body.speed);
+      exercise.time = Number(req.body.time);
+  
+      await exercise.save();
+      res.json('Cardio Exercise updated!');
+    } catch (err) {
+      res.status(400).json('Error: ' + err);
+    }
+  });
+  
+  module.exports = router;
+  
+
 module.exports = router;

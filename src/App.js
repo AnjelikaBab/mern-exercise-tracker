@@ -15,7 +15,8 @@ function App() {
       <Navbar />
       <br/>
       <Route path="/" exact component={ExercisesList} />
-      <Route path="/edit/:id" component={EditExercise} />
+      <Route path="/edit-cardio/:id" component={props => <EditExercise {...props} type="cardioExercises" />} />
+      <Route path="/edit-strength/:id" component={props => <EditExercise {...props} type="strengthExercises" />} />
       <Route path="/create" component={CreateExercise} />
       <Route path="/name" component={CreateWorkoutName} />
       </div>

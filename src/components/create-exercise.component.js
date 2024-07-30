@@ -118,7 +118,7 @@ export default class CreateExercise extends Component {
       };
   
       // URL for Cardio exercises
-      var url = 'http://localhost:5001/cardioexercises/add';
+      var url = 'http://localhost:5001/cardioExercises/add';
   
     } else if (this.state.workoutType === 'Strength') {
       exercise = {
@@ -127,7 +127,7 @@ export default class CreateExercise extends Component {
       };
   
       // URL for Strength exercises
-      var url = 'http://localhost:5001/strengthexercises/add';
+      var url = 'http://localhost:5001/strengthExercises/add';
   
     } else {
       console.error('Unknown workout type');
@@ -139,6 +139,8 @@ export default class CreateExercise extends Component {
     axios.post(url, exercise)
       .then(res => console.log(res.data))
       .catch(err => console.error('Error: ' + err));
+
+      window.location = '/create';
   }
   
 

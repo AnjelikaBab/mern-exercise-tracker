@@ -1,16 +1,18 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
-const Exercise = props => (
+const CardioExercise = props => (
   <tr>
     <td>{props.exercise.workoutName}</td>
-    <td>{props.exercise.description}</td>
-    <td>{props.exercise.duration}</td>
-    <td>{props.exercise.date.substring(0,10)}</td>
+    <td>{props.exercise.date.substring(0, 10)}</td>
+    <td>{props.exercise.incline}</td>
+    <td>{props.exercise.distance}</td>
+    <td>{props.exercise.speed}</td>
+    <td>{props.exercise.time}</td>
+    
     <td>
-      <Link to={"/edit/"+props.exercise._id}>edit</Link> | 
-      <a href="#" onClick={() => { props.deleteExercise(props.exercise._id) }}>delete</a>
+      <Link to={"/edit-cardio/" + props.exercise._id}>edit</Link> | <a href="#" onClick={() => { props.deleteExercise(props.exercise._id) }}>delete</a>
     </td>
   </tr>
 );
@@ -18,39 +20,25 @@ const Exercise = props => (
 const StrengthExercise = props => (
   <tr>
     <td>{props.exercise.workoutName}</td>
-    <td>{props.exercise.description}</td>
-    <td>{props.exercise.duration}</td>
-    <td>{props.exercise.date.substring(0,10)}</td>
+    <td>{props.exercise.date.substring(0, 10)}</td>
+    {props.exercise.sets.map((set, index) => (
+      <React.Fragment key={index}>
+        <td>{set.weight}</td>
+        <td>{set.reps}</td>
+      </React.Fragment>
+    ))}
     <td>
-      <table className="table">
-        <thead className="thead-light">
-          <tr>
-            <th>Set</th>
-            <th>Weight</th>
-            <th>Reps</th>
-          </tr>
-        </thead>
-        <tbody>
-          {props.exercise.sets.map((set, index) => (
-            <tr key={index}>
-              <td>{index + 1}</td>
-              <td>{set.weight}</td>
-              <td>{set.reps}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <Link to={"/edit/"+props.exercise._id}>edit</Link> | 
-      <a href="#" onClick={() => { props.deleteExercise(props.exercise._id) }}>delete</a>
+      <Link to={"/edit-strength/" + props.exercise._id}>edit</Link> | <a href="#" onClick={() => { props.deleteExercise(props.exercise._id) }}>delete</a>
     </td>
   </tr>
 );
 
-export default class ExercisesList extends Component {
+export default class ExerciseList extends Component {
   constructor(props) {
     super(props);
 
-    this.deleteExercise = this.deleteExercise.bind(this);
+    this.deleteCardioExercise = this.deleteCardioExercise.bind(this);
+    this.deleteStrengthExercise = this.deleteStrengthExercise.bind(this);
 
     this.state = {
       cardioExercises: [],
@@ -59,73 +47,87 @@ export default class ExercisesList extends Component {
   }
 
   componentDidMount() {
-    axios.get('http://localhost:5001/exercises/')
+    axios.get('http://localhost:5001/cardioExercises/')
       .then(response => {
-        const exercises = response.data;
-        this.setState({
-          cardioExercises: exercises.filter(exercise => exercise.workoutType === 'Cardio'),
-          strengthExercises: exercises.filter(exercise => exercise.workoutType === 'Strength')
-        });
+        this.setState({ cardioExercises: response.data });
       })
-      .catch((error) => {
+      .catch(error => {
+        console.log(error);
+      });
+
+    axios.get('http://localhost:5001/strengthExercises/')
+      .then(response => {
+        this.setState({ strengthExercises: response.data });
+      })
+      .catch(error => {
         console.log(error);
       });
   }
 
-  deleteExercise(id) {
-    axios.delete('http://localhost:5001/exercises/'+id)
+  deleteCardioExercise(id) {
+    axios.delete('http://localhost:5001/cardioExercises/' + id)
       .then(response => { console.log(response.data) });
 
-    this.setState(prevState => ({
-      cardioExercises: prevState.cardioExercises.filter(el => el._id !== id),
-      strengthExercises: prevState.strengthExercises.filter(el => el._id !== id)
-    }));
+    this.setState({
+      cardioExercises: this.state.cardioExercises.filter(el => el._id !== id)
+    });
   }
 
-  exerciseList(exercises, isStrength = false) {
-    return exercises.map(currentexercise => {
-      if (isStrength) {
-        return <StrengthExercise exercise={currentexercise} deleteExercise={this.deleteExercise} key={currentexercise._id} />;
-      }
-      return <Exercise exercise={currentexercise} deleteExercise={this.deleteExercise} key={currentexercise._id} />;
+  deleteStrengthExercise(id) {
+    axios.delete('http://localhost:5001/strengthExercises/' + id)
+      .then(response => { console.log(response.data) });
+
+    this.setState({
+      strengthExercises: this.state.strengthExercises.filter(el => el._id !== id)
+    });
+  }
+
+  cardioExerciseList() {
+    return this.state.cardioExercises.map(currentExercise => {
+      return <CardioExercise exercise={currentExercise} deleteExercise={this.deleteCardioExercise} key={currentExercise._id} />;
+    });
+  }
+
+  strengthExerciseList() {
+    return this.state.strengthExercises.map(currentExercise => {
+      return <StrengthExercise exercise={currentExercise} deleteExercise={this.deleteStrengthExercise} key={currentExercise._id} />;
     });
   }
 
   render() {
     return (
       <div>
-        <h3>Logged Exercises</h3>
-
-        <h4>Cardio Exercises</h4>
+        <h3>Cardio Exercises</h3>
         <table className="table">
           <thead className="thead-light">
             <tr>
               <th>Workout Name</th>
-              <th>Description</th>
-              <th>Duration</th>
               <th>Date</th>
+              <th>Incline</th>
+              <th>Distance</th>
+              <th>Speed</th>
+              <th>Time</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {this.exerciseList(this.state.cardioExercises)}
+            {this.cardioExerciseList()}
           </tbody>
         </table>
 
-        <h4>Strength Exercises</h4>
+        <h3>Strength Exercises</h3>
         <table className="table">
           <thead className="thead-light">
             <tr>
               <th>Workout Name</th>
-              <th>Description</th>
-              <th>Duration</th>
               <th>Date</th>
-              <th>Sets</th>
+              <th>Weight</th>
+              <th>Reps</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {this.exerciseList(this.state.strengthExercises, true)}
+            {this.strengthExerciseList()}
           </tbody>
         </table>
       </div>

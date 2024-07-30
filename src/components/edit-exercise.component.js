@@ -7,146 +7,228 @@ export default class EditExercise extends Component {
   constructor(props) {
     super(props);
 
-    this.onChangeWorkoutName = this.onChangeWorkoutName.bind(this);
-    this.onChangeDescription = this.onChangeDescription.bind(this);
-    this.onChangeDuration = this.onChangeDuration.bind(this);
     this.onChangeDate = this.onChangeDate.bind(this);
+    this.onChangeIncline = this.onChangeIncline.bind(this);
+    this.onChangeDistance = this.onChangeDistance.bind(this);
+    this.onChangeSpeed = this.onChangeSpeed.bind(this);
+    this.onChangeTime = this.onChangeTime.bind(this);
+    this.onChangeSet = this.onChangeSet.bind(this);
+    this.onAddSet = this.onAddSet.bind(this);
+    this.onRemoveSet = this.onRemoveSet.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
 
     this.state = {
       workoutName: '',
-      description: '',
-      duration: 0,
+      workoutType: '',
       date: new Date(),
-      workouts: []
-    }
+      incline: '',
+      distance: '',
+      speed: '',
+      time: '',
+      sets: [{ weight: '', reps: '' }]
+    };
   }
 
   componentDidMount() {
-    axios.get('http://localhost:5001/exercises/'+this.props.match.params.id)
-      .then(response => {
-        this.setState({
-          workoutName: response.data.workoutName,
-          description: response.data.description,
-          duration: response.data.duration,
-          date: new Date(response.data.date)
-        })   
-      })
-      .catch(function (error) {
-        console.log(error);
-      })
+    console.log(this.state.workoutName)
+    const { id } = this.props.match.params;
+    const currentUrl = window.location.pathname;
+    let type;
 
-    axios.get('http://localhost:5001/name/')
-      .then(response => {
-        if (response.data.length > 0) {
+    if (currentUrl.includes('/edit-cardio/')) {
+      type = 'cardioExercises';
+    } else if (currentUrl.includes('/edit-strength/')) {
+      type = 'strengthExercises';
+    }
+
+    this.setState({ workoutType: type }, () => {
+      axios.get(`http://localhost:5001/${this.state.workoutType}/${id}`)
+        .then(response => {
+          const data = response.data;
           this.setState({
-            workoutName: response.data.map(user => user.workoutName),
-          })
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      })
-
-  }
-
-  onChangeWorkoutName(e) {
-    this.setState({
-        workoutName: e.target.value
-    })
-  }
-
-  onChangeDescription(e) {
-    this.setState({
-      description: e.target.value
-    })
-  }
-
-  onChangeDuration(e) {
-    this.setState({
-      duration: e.target.value
-    })
+            workoutName: data.workoutName,
+            date: new Date(data.date),
+            incline: data.incline || '',
+            distance: data.distance || '',
+            speed: data.speed || '',
+            time: data.time || '',
+            sets: data.sets || [{ weight: '', reps: '' }]
+          });
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    });
   }
 
   onChangeDate(date) {
-    this.setState({
-      date: date
-    })
+    this.setState({ date: date });
+  }
+
+  onChangeIncline(e) {
+    this.setState({ incline: e.target.value });
+  }
+
+  onChangeDistance(e) {
+    this.setState({ distance: e.target.value });
+  }
+
+  onChangeSpeed(e) {
+    this.setState({ speed: e.target.value });
+  }
+
+  onChangeTime(e) {
+    this.setState({ time: e.target.value });
+  }
+
+  onChangeSet(index, key, value) {
+    const sets = [...this.state.sets];
+    sets[index][key] = value;
+    this.setState({ sets });
+  }
+
+  onAddSet() {
+    this.setState(prevState => ({
+      sets: [...prevState.sets, { weight: 0, reps: 0 }]
+    }));
+  }
+
+  onRemoveSet(index) {
+    this.setState(prevState => ({
+      sets: prevState.sets.filter((set, i) => i !== index)
+    }));
   }
 
   onSubmit(e) {
     e.preventDefault();
 
-    const exercise = {
+    let exercise = {
       workoutName: this.state.workoutName,
-      description: this.state.description,
-      duration: this.state.duration,
       date: this.state.date
+    };
+
+    if (this.state.workoutType === 'cardioExercises') {
+      exercise = {
+        ...exercise,
+        incline: this.state.incline,
+        distance: this.state.distance,
+        speed: this.state.speed,
+        time: this.state.time
+      };
+    } else if (this.state.workoutType === 'strengthExercises') {
+      exercise = {
+        ...exercise,
+        sets: this.state.sets
+      };
+    } else {
+      console.error('Unknown workout type');
+      return;
     }
 
-    console.log(exercise);
+    const url = `http://localhost:5001/${this.state.workoutType}/update/${this.props.match.params.id}`;
 
-    axios.post('http://localhost:5001/exercises/update/' + this.props.match.params.id, exercise)
-      .then(res => console.log(res.data));
+    axios.post(url, exercise)
+      .then(res => console.log(res.data))
+      .catch(err => console.error('Error: ' + err));
 
     window.location = '/';
   }
 
   render() {
     return (
-    <div>
-      <h3>Edit Exercise Log</h3>
-      <form onSubmit={this.onSubmit}>
-        <div className="form-group"> 
-          <label>workout Name: </label>
-          <select ref={this.userInputRef} // Use the ref created with createRef
-              required
+      <div>
+        <h3>Edit {this.state.workoutType.replace('Exercises', '')} Exercise Log</h3>
+        <form onSubmit={this.onSubmit}>
+          <div className="form-group">
+            <label>Workout Name: </label>
+            <input
+              type="text"
               className="form-control"
               value={this.state.workoutName}
-              onChange={this.onChangeWorkoutName}>
-              {
-                this.state.workouts.map(function(workout) {
-                  return <option 
-                    key={workout}
-                    value={workout}>{workout}
-                    </option>;
-                })
-              }
-          </select>
-        </div>
-        <div className="form-group"> 
-          <label>Description: </label>
-          <input  type="text"
-              required
-              className="form-control"
-              value={this.state.description}
-              onChange={this.onChangeDescription}
-              />
-        </div>
-        <div className="form-group">
-          <label>Duration (in minutes): </label>
-          <input 
-              type="text" 
-              className="form-control"
-              value={this.state.duration}
-              onChange={this.onChangeDuration}
-              />
-        </div>
-        <div className="form-group">
-          <label>Date: </label>
-          <div>
-            <DatePicker
-              selected={this.state.date}
-              onChange={this.onChangeDate}
+              readOnly // Makes the input field read-only
             />
           </div>
-        </div>
-
-        <div className="form-group">
-          <input type="submit" value="Edit Exercise Log" className="btn btn-primary" />
-        </div>
-      </form>
-    </div>
-    )
+          <div className="form-group">
+            <label>Date: </label>
+            <div>
+              <DatePicker
+                selected={this.state.date}
+                onChange={this.onChangeDate}
+              />
+            </div>
+          </div>
+          {this.state.workoutType === 'cardioExercises' && (
+            <>
+              <div className="form-group">
+                <label>Incline: </label>
+                <input
+                  type="number"
+                  className="form-control"
+                  value={this.state.incline}
+                  onChange={this.onChangeIncline}
+                />
+              </div>
+              <div className="form-group">
+                <label>Distance: </label>
+                <input
+                  type="number"
+                  className="form-control"
+                  value={this.state.distance}
+                  onChange={this.onChangeDistance}
+                />
+              </div>
+              <div className="form-group">
+                <label>Speed: </label>
+                <input
+                  type="number"
+                  className="form-control"
+                  value={this.state.speed}
+                  onChange={this.onChangeSpeed}
+                />
+              </div>
+              <div className="form-group">
+                <label>Time: </label>
+                <input
+                  type="number"
+                  className="form-control"
+                  value={this.state.time}
+                  onChange={this.onChangeTime}
+                />
+              </div>
+            </>
+          )}
+          {this.state.workoutType === 'strengthExercises' && (
+            <>
+              {this.state.sets.map((set, index) => (
+                <div key={index} className="form-group">
+                  <label>Set {index + 1}</label>
+                  <div>
+                    <input
+                      type="number"
+                      placeholder="Weight"
+                      className="form-control"
+                      value={set.weight}
+                      onChange={e => this.onChangeSet(index, 'weight', e.target.value)}
+                    />
+                    <input
+                      type="number"
+                      placeholder="Reps"
+                      className="form-control"
+                      value={set.reps}
+                      onChange={e => this.onChangeSet(index, 'reps', e.target.value)}
+                    />
+                    <button type="button" onClick={() => this.onRemoveSet(index)}>Remove</button>
+                  </div>
+                </div>
+              ))}
+              <button type="button" onClick={this.onAddSet}>Add Set</button>
+            </>
+          )}
+          <div className="form-group">
+            <input type="submit" value="Edit Exercise Log" className="btn btn-primary" />
+          </div>
+        </form>
+      </div>
+    );
   }
 }
