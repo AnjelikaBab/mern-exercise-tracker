@@ -233,13 +233,13 @@ export default class CreateExercise extends Component {
                       />
                     </div>
                     <div className="col">
-                      <button type="button" onClick={() => this.removeSet(index)}>Remove</button>
+                      <button className="customBtn" type="button" onClick={() => this.removeSet(index)}>Remove</button>
                     </div>
                   </div>
                 </div>
               ))}
               <div className="form-group">
-                <button type="button" onClick={this.addSet}>Add Set</button>
+                <button className="customBtn" type="button" onClick={this.addSet}>Add Set</button>
               </div>
             </>
           )}
@@ -254,7 +254,7 @@ export default class CreateExercise extends Component {
             </div>
           </div>
           <div className="form-group">
-            <input type="submit" value="Create Exercise Log" className="btn btn-primary" />
+            <input type="submit" value="Create Exercise Log" className="customBtn" />
           </div>
         </form>
       </div>

@@ -76,7 +76,7 @@ export default class CreateWorkoutName extends Component {
             </select>
           </div>
           <div className="form-group">
-            <input type="submit" value="Add" className="btn btn-primary" />
+            <input type="submit" value="Add" className="customBtn" />
           </div>
         </form>
       </div>

@@ -137,7 +137,7 @@ export default class EditExercise extends Component {
   render() {
     return (
       <div>
-        <h3>Edit {this.state.workoutType.replace('Exercises', '')} Exercise Log</h3>
+        <h3 >Edit {this.state.workoutType.replace('Exercises', '')} Exercise Log</h3>
         <form onSubmit={this.onSubmit}>
           <div className="form-group">
             <label>Workout Name: </label>
