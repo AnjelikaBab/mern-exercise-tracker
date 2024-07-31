@@ -6,8 +6,8 @@ const StrengthExercise = mongoose.models.StrengthExercise || mongoose.model('Str
   workoutName: { type: String, required: true },
   date: { type: Date, required: true },
   sets: [{
-    weight: { type: Number, required: true },
-    reps: { type: Number, required: true }
+    weight: { type: String, required: true },
+    reps: { type: String, required: true }
   }]
 }));
 

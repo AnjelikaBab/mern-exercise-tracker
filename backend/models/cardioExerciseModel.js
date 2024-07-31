@@ -5,10 +5,10 @@ const Schema = mongoose.Schema;
 const CardioExercise = mongoose.models.CardioExercise || mongoose.model('CardioExercise', new Schema({
   workoutName: { type: String, required: true },
   date: { type: Date, required: true },
-  incline: { type: Number, required: false },
-  distance: { type: Number, required: true },
-  speed: { type: Number, required: true },
-  time: { type: Number, required: true }
+  incline: { type: String, required: false },
+  distance: { type: String, required: false },
+  speed: { type: String, required: false },
+  time: { type: String, required: true }
 }));
 
 module.exports = CardioExercise;

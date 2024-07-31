@@ -57,8 +57,8 @@ router.get('/:id', async (req, res) => {
       exercise.workoutName = req.body.workoutName;
       exercise.date = Date.parse(req.body.date);
       exercise.sets = req.body.sets.map(set => ({
-        weight: Number(set.weight),
-        reps: Number(set.reps)
+        weight: String(set.weight),
+        reps: String(set.reps)
       }));
   
       await exercise.save();

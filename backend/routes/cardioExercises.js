@@ -56,10 +56,10 @@ router.get('/:id', async (req, res) => {
   
       exercise.workoutName = req.body.workoutName;
       exercise.date = Date.parse(req.body.date);
-      exercise.incline = Number(req.body.incline);
-      exercise.distance = Number(req.body.distance);
-      exercise.speed = Number(req.body.speed);
-      exercise.time = Number(req.body.time);
+      exercise.incline = String(req.body.incline);
+      exercise.distance = String(req.body.distance);
+      exercise.speed = String(req.body.speed);
+      exercise.time = String(req.body.time);
   
       await exercise.save();
       res.json('Cardio Exercise updated!');

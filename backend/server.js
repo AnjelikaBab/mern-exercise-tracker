@@ -21,7 +21,7 @@ connection.once('open', () => {
   console.log("MongoDB database connection established successfully");
 })
 
-const exercisesRouter = require('./routes/exercises');
+// const exercisesRouter = require('./routes/exercises');
 const workoutNamesRouter = require('./routes/workoutNames');
 
 // Import routes
@@ -33,7 +33,7 @@ app.use('/cardioExercises', cardioExercisesRouter);
 app.use('/strengthExercises', strengthExercisesRouter);
 
 //loads these files with specified url
-app.use('/exercises', exercisesRouter);
+// app.use('/exercises', exercisesRouter);
 app.use('/name', workoutNamesRouter);
 
 app.listen(port, () => {

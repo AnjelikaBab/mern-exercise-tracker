@@ -162,7 +162,7 @@ export default class EditExercise extends Component {
               <div className="form-group">
                 <label>Incline: </label>
                 <input
-                  type="number"
+                  type="string"
                   className="form-control"
                   value={this.state.incline}
                   onChange={this.onChangeIncline}
@@ -171,7 +171,7 @@ export default class EditExercise extends Component {
               <div className="form-group">
                 <label>Distance: </label>
                 <input
-                  type="number"
+                  type="string"
                   className="form-control"
                   value={this.state.distance}
                   onChange={this.onChangeDistance}
@@ -180,7 +180,7 @@ export default class EditExercise extends Component {
               <div className="form-group">
                 <label>Speed: </label>
                 <input
-                  type="number"
+                  type="string"
                   className="form-control"
                   value={this.state.speed}
                   onChange={this.onChangeSpeed}
@@ -189,7 +189,7 @@ export default class EditExercise extends Component {
               <div className="form-group">
                 <label>Time: </label>
                 <input
-                  type="number"
+                  type="string"
                   className="form-control"
                   value={this.state.time}
                   onChange={this.onChangeTime}
@@ -204,14 +204,14 @@ export default class EditExercise extends Component {
                   <label>Set {index + 1}</label>
                   <div>
                     <input
-                      type="number"
+                      type="string"
                       placeholder="Weight"
                       className="form-control"
                       value={set.weight}
                       onChange={e => this.onChangeSet(index, 'weight', e.target.value)}
                     />
                     <input
-                      type="number"
+                      type="string"
                       placeholder="Reps"
                       className="form-control"
                       value={set.reps}

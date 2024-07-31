@@ -170,7 +170,7 @@ export default class CreateExercise extends Component {
               <div className="form-group">
                 <label>Incline: </label>
                 <input
-                  type="number"
+                  type="string"
                   className="form-control"
                   value={this.state.incline}
                   onChange={e => this.setState({ incline: e.target.value })}
@@ -179,7 +179,7 @@ export default class CreateExercise extends Component {
               <div className="form-group">
                 <label>Distance: </label>
                 <input
-                  type="number"
+                  type="string"
                   className="form-control"
                   value={this.state.distance}
                   onChange={e => this.setState({ distance: e.target.value })}
@@ -188,7 +188,7 @@ export default class CreateExercise extends Component {
               <div className="form-group">
                 <label>Speed: </label>
                 <input
-                  type="number"
+                  type="string"
                   className="form-control"
                   value={this.state.speed}
                   onChange={e => this.setState({ speed: e.target.value })}
@@ -197,7 +197,7 @@ export default class CreateExercise extends Component {
               <div className="form-group">
                 <label>Time: </label>
                 <input
-                  type="number"
+                  type="string"
                   className="form-control"
                   value={this.state.time}
                   onChange={e => this.setState({ time: e.target.value })}
@@ -214,7 +214,7 @@ export default class CreateExercise extends Component {
                   <div className="form-row">
                     <div className="col">
                       <input
-                        type="number"
+                        type="string"
                         className="form-control"
                         name="weight"
                         placeholder="Weight"
@@ -224,7 +224,7 @@ export default class CreateExercise extends Component {
                     </div>
                     <div className="col">
                       <input
-                        type="number"
+                        type="string"
                         className="form-control"
                         name="reps"
                         placeholder="Reps"
