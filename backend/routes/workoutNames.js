@@ -21,6 +21,14 @@ router.route('/:workoutName').get((req, res) => {
         .catch(err => res.status(400).json('Error: ' + err));
 });
 
+// Delete workout by name
+router.delete('/:workoutName', (req, res) => {
+  Workout.findOneAndDelete({ workoutName: req.params.workoutName })
+    .then(() => res.json('Workout deleted.'))
+    .catch(err => res.status(400).json('Error: ' + err));
+});
+
+
 // Add new workout
 router.route('/add').post((req, res) => {
     const { workoutName, workoutType } = req.body;

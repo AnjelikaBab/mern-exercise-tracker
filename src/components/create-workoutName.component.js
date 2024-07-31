@@ -6,12 +6,31 @@ export default class CreateWorkoutName extends Component {
     super(props);
 
     this.onChangeWorkoutName = this.onChangeWorkoutName.bind(this);
+    this.onChangeWorkoutType = this.onChangeWorkoutType.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
+    this.onChangeWorkoutToRemove = this.onChangeWorkoutToRemove.bind(this);
+    this.onRemove = this.onRemove.bind(this);
 
     this.state = {
       workoutName: '',
-      workoutType: '' // New state for the dropdown selection
+      workoutType: '', // New state for the dropdown selection
+      workouts: [],
+      workoutToRemove: '' // State to store the selected workout name for removal
     };
+  }
+
+  componentDidMount() {
+    axios.get('http://localhost:5001/name/')
+      .then(response => {
+        if (response.data.length > 0) {
+          this.setState({
+            workouts: response.data.map(workout => workout.workoutName),
+          });
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      });
   }
 
   onChangeWorkoutName(e) {
@@ -26,6 +45,12 @@ export default class CreateWorkoutName extends Component {
     });
   }
 
+  onChangeWorkoutToRemove(e) {
+    this.setState({
+      workoutToRemove: e.target.value
+    });
+  }
+
   onSubmit(e) {
     e.preventDefault();
 
@@ -36,14 +61,31 @@ export default class CreateWorkoutName extends Component {
 
     console.log(workout);
 
-    // Assuming axios is imported and the server is set up to handle this request
     axios.post('http://localhost:5001/name/add', workout)
-      .then(res => console.log(res.data))
+      .then(res => {
+        console.log(res.data);
+        this.componentDidMount(); // Refresh the list of workouts
+      })
       .catch(err => console.error('Error: ' + err));
 
     this.setState({
       workoutName: '',
       workoutType: '' // Reset the dropdown selection
+    });
+  }
+
+  onRemove(e) {
+    e.preventDefault();
+
+    axios.delete(`http://localhost:5001/name/${this.state.workoutToRemove}`)
+      .then(res => {
+        console.log(res.data);
+        this.componentDidMount(); // Refresh the list of workouts
+      })
+      .catch(err => console.error('Error: ' + err));
+
+    this.setState({
+      workoutToRemove: '' // Reset the dropdown selection
     });
   }
 
@@ -68,7 +110,7 @@ export default class CreateWorkoutName extends Component {
               required
               className="form-control"
               value={this.state.workoutType}
-              onChange={(e) => this.onChangeWorkoutType(e)}
+              onChange={this.onChangeWorkoutType}
             >
               <option value="" disabled>Select type</option>
               <option value="Cardio">Cardio</option>
@@ -77,6 +119,28 @@ export default class CreateWorkoutName extends Component {
           </div>
           <div className="form-group">
             <input type="submit" value="Add" className="customBtn" />
+          </div>
+        </form>
+        <h3>Remove Workouts</h3>
+        <form onSubmit={this.onRemove}>
+          <div className="form-group">
+            <label>Select Workout to Remove: </label>
+            <select
+              required
+              className="form-control"
+              value={this.state.workoutToRemove}
+              onChange={this.onChangeWorkoutToRemove}
+            >
+              <option value="" disabled>Select workout</option>
+              {this.state.workouts.map(workout => (
+                <option key={workout} value={workout}>
+                  {workout}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="form-group">
+            <input type="submit" value="Remove" className="customBtn" />
           </div>
         </form>
       </div>
