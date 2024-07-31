@@ -52,7 +52,7 @@ export default class EditExercise extends Component {
             distance: data.distance || '',
             speed: data.speed || '',
             time: data.time || '',
-            sets: data.sets || [{ weight: '', reps: '' }]
+            sets: data.sets && data.sets.length > 0 ? data.sets : [{ weight: '', reps: '' }]
           });
         })
         .catch(error => {
@@ -89,7 +89,7 @@ export default class EditExercise extends Component {
 
   onAddSet() {
     this.setState(prevState => ({
-      sets: [...prevState.sets, { weight: 0, reps: 0 }]
+      sets: [...prevState.sets, { weight: '', reps: '' }]
     }));
   }
 
@@ -137,7 +137,7 @@ export default class EditExercise extends Component {
   render() {
     return (
       <div>
-        <h3 >Edit {this.state.workoutType.replace('Exercises', '')} Exercise Log</h3>
+        <h3>Edit {this.state.workoutType.replace('Exercises', '')} Exercise Log</h3>
         <form onSubmit={this.onSubmit}>
           <div className="form-group">
             <label>Workout Name: </label>
@@ -217,15 +217,15 @@ export default class EditExercise extends Component {
                       value={set.reps}
                       onChange={e => this.onChangeSet(index, 'reps', e.target.value)}
                     />
-                    <button type="button" onClick={() => this.onRemoveSet(index)}>Remove</button>
+                    <button className="customBtn" type="button" onClick={() => this.onRemoveSet(index)}>Remove</button>
                   </div>
                 </div>
               ))}
-              <button type="button" onClick={this.onAddSet}>Add Set</button>
+              <button className="customBtn" type="button" onClick={this.onAddSet}>Add Set</button>
             </>
           )}
-          <div className="form-group">
-            <input type="submit" value="Edit Exercise Log" className="btn btn-primary" />
+          <div className="form-group" style={{ marginTop: '20px' }}>
+            <input  type="submit" value="Edit Exercise Log" className="customBtn" />
           </div>
         </form>
       </div>

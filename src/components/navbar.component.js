@@ -8,7 +8,7 @@ export default class Navbar extends Component {
     return (
       <nav className="navbar navbar-expand-lg bg-backgroundCol" >
        <Link to="/" className="navbar-brand text-white text-2xl font-bold hover:text-gray-300 transition-colors duration-300">
-  Tracktastic
+  Active Diary
 </Link>
         <div className="collpase navbar-collapse">
         <ul className="navbar-nav mr-auto">

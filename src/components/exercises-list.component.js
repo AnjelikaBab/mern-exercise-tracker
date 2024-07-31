@@ -10,25 +10,8 @@ const CardioExercise = props => (
     <td>{props.exercise.distance}</td>
     <td>{props.exercise.speed}</td>
     <td>{props.exercise.time}</td>
-    
     <td>
       <Link to={"/edit-cardio/" + props.exercise._id}>edit</Link> | <a href="#" onClick={() => { props.deleteExercise(props.exercise._id) }}>delete</a>
-    </td>
-  </tr>
-);
-
-const StrengthExercise = props => (
-  <tr>
-    <td>{props.exercise.workoutName}</td>
-    <td>{props.exercise.date.substring(0, 10)}</td>
-    {props.exercise.sets.map((set, index) => (
-      <React.Fragment key={index}>
-        <td>{set.weight}</td>
-        <td>{set.reps}</td>
-      </React.Fragment>
-    ))}
-    <td>
-      <Link to={"/edit-strength/" + props.exercise._id}>edit</Link> | <a href="#" onClick={() => { props.deleteExercise(props.exercise._id) }}>delete</a>
     </td>
   </tr>
 );
@@ -42,7 +25,8 @@ export default class ExerciseList extends Component {
 
     this.state = {
       cardioExercises: [],
-      strengthExercises: []
+      strengthExercises: [],
+      maxSets: 0
     };
   }
 
@@ -57,7 +41,9 @@ export default class ExerciseList extends Component {
 
     axios.get('http://localhost:5001/strengthExercises/')
       .then(response => {
-        this.setState({ strengthExercises: response.data });
+        const strengthExercises = response.data;
+        const maxSets = Math.max(...strengthExercises.map(exercise => exercise.sets.length), 0);
+        this.setState({ strengthExercises, maxSets });
       })
       .catch(error => {
         console.log(error);
@@ -89,9 +75,24 @@ export default class ExerciseList extends Component {
   }
 
   strengthExerciseList() {
-    return this.state.strengthExercises.map(currentExercise => {
-      return <StrengthExercise exercise={currentExercise} deleteExercise={this.deleteStrengthExercise} key={currentExercise._id} />;
-    });
+    return this.state.strengthExercises.map(currentExercise => (
+      <tr key={currentExercise._id}>
+        <td>{currentExercise.workoutName}</td>
+        <td>{new Date(currentExercise.date).toLocaleDateString()}</td>
+        {currentExercise.sets.map((set, index) => (
+          <td key={index}>
+            <div>Weight: {set.weight}</div>
+            <div>Reps: {set.reps}</div>
+          </td>
+        ))}
+        {[...Array(Math.max(this.state.maxSets - currentExercise.sets.length, 0))].map((_, index) => (
+          <td key={`empty-${index}`}></td>
+        ))}
+        <td>
+          <Link to={"/edit-strength/" + currentExercise._id}>edit</Link> | <a href="#" onClick={() => { this.deleteStrengthExercise(currentExercise._id) }}>delete</a>
+        </td>
+      </tr>
+    ));
   }
 
   render() {
@@ -116,20 +117,23 @@ export default class ExerciseList extends Component {
         </table>
 
         <h3>Strength Exercises</h3>
-        <table className="table">
-          <thead className="thead-light">
-            <tr>
-              <th>Workout Name</th>
-              <th>Date</th>
-              <th>Weight</th>
-              <th>Reps</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {this.strengthExerciseList()}
-          </tbody>
-        </table>
+        <div style={{ overflowX: 'auto' }}>
+          <table className="table">
+            <thead className="thead-light">
+              <tr>
+                <th>Workout Name</th>
+                <th>Date</th>
+                {[...Array(this.state.maxSets)].map((_, index) => (
+                  <th key={index}>Set {index + 1}</th>
+                ))}
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {this.strengthExerciseList()}
+            </tbody>
+          </table>
+        </div>
       </div>
     );
   }
