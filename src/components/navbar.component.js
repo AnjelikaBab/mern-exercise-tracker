@@ -6,7 +6,7 @@ export default class Navbar extends Component {
 
   render() {
     return (
-      <nav className="navbar navbar-expand-lg bg-backgroundCol" >
+      <nav className="navbar navbar-expand-lg bg-backgroundCol border-t-buttonCol border-t-8" >
        <Link to="/" className="navbar-brand text-white text-2xl font-bold hover:text-gray-300 transition-colors duration-300">
   Active Diary
 </Link>
