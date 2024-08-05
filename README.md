@@ -1,5 +1,5 @@
 <h1> Active Diary </h1>
-###### A way to keep track and log all your exercises, noting your progress overtime and keeping you motivated. 
+##### **A way to keep track and log all your exercises, noting your progress overtime and keeping you motivated. **
 
 ### Built With
 * [![React][React.js]][React-url]
