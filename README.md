@@ -1,70 +1,15 @@
-# Getting Started with Create React App
-
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+View your exercise log history and filter depending on workout type and name. 
 
-In the project directory, you can run:
+<img width="1122" alt="Screenshot 2024-08-05 at 3 28 48 PM" src="https://github.com/user-attachments/assets/507494ca-1273-48a1-a1e8-6f5bb58b1c9a">
+<img width="1122" alt="Screenshot 2024-08-05 at 3 29 11 PM" src="https://github.com/user-attachments/assets/08be4d62-f988-4f81-b55c-7d1dc33ca031">
 
-### `npm start`
+Create new exercise logs
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+<img width="1115" alt="Screenshot 2024-08-05 at 3 31 05 PM" src="https://github.com/user-attachments/assets/1deb2498-91cb-4231-a0ed-1a15efb8a203">
+<img width="1129" alt="Screenshot 2024-08-05 at 3 32 02 PM" src="https://github.com/user-attachments/assets/744a31b2-48e2-4df1-bbd0-d7cc1226e9e3">
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Add or delete workout types
+<img width="1123" alt="Screenshot 2024-08-05 at 3 33 03 PM" src="https://github.com/user-attachments/assets/125d8e61-092c-4c43-bc33-d8dc6dd3c5c3">
+<img width="1129" alt="Screenshot 2024-08-05 at 3 33 59 PM" src="https://github.com/user-attachments/assets/307b28d8-cd05-474e-9621-1cbe10ac9959">
