@@ -1,6 +1,9 @@
 <h1> Active Diary </h1>
-> A way to keep track and log all your exercises, noting your progress overtime and keeping you motivated. 
+###### A way to keep track and log all your exercises, noting your progress overtime and keeping you motivated. 
 
+### Built With
+* [![React][React.js]][React-url]
+  
 <h2> View your exercise log history and filter depending on workout type and name. </h2>
 
 <img width="1122" alt="Screenshot 2024-08-05 at 3 28 48 PM" src="https://github.com/user-attachments/assets/507494ca-1273-48a1-a1e8-6f5bb58b1c9a">
