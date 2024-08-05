@@ -1,8 +1,12 @@
-<h1> Active Diary </h1>
-##### **A way to keep track and log all your exercises, noting your progress overtime and keeping you motivated. **
+# Active Diary
+###### A way to keep track and log all your exercises, noting your progress overtime and keeping you motivated.
 
 ### Built With
 * [![React][React.js]][React-url]
+* [![Bootstrap][Bootstrap.com]][Bootstrap-url]
+* [![Node][Node.com]][Node-url]
+* [![Mongo][Mongo.com]][Mongo-url]
+* [![Express][Express.com]][Express-url]
   
 <h2> View your exercise log history and filter depending on workout type and name. </h2>
 
@@ -21,3 +25,16 @@
 <img width="1123" alt="Screenshot 2024-08-05 at 3 33 03 PM" src="https://github.com/user-attachments/assets/125d8e61-092c-4c43-bc33-d8dc6dd3c5c3">
 
 <img width="1129" alt="Screenshot 2024-08-05 at 3 33 59 PM" src="https://github.com/user-attachments/assets/307b28d8-cd05-474e-9621-1cbe10ac9959">
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+[React-url]: https://reactjs.org/
+[React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
+[Bootstrap.com]: https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white
+[Bootstrap-url]: https://getbootstrap.com
+[Node.com]: https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white
+[Node-url]: https://nodejs.org/en
+[Express.com]: https://img.shields.io/badge/Express.js-404D59?style=for-the-badge
+[Express-url]: https://expressjs.com/
+[Mongo.com]: https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white
+[Mongo-url]: https://www.mongodb.com/
