@@ -1,3 +1,5 @@
+<h1> Active Diary </h1>
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 <h2> View your exercise log history and filter depending on workout type and name. </h2>
