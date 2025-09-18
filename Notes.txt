@@ -1,2 +1,0 @@
- Nodemon makes development easier: a tool that helps develop node js applications by autoamtically restarting node application when changes in the server sdirectory are detected.  
- Update server: automatically update the server
