@@ -10,7 +10,14 @@ const app = express();
 const port = process.env.PORT || 5001;
 
 //middleware, allows to parse json, servers sends and recieves json
-app.use(cors());
+app.use(cors({
+  origin: [
+    'http://localhost:3000',
+    'https://active-diary.vercel.app',
+    'https://mern-exercise-tracker.vercel.app'
+  ],
+  credentials: true
+}));
 app.use(express.json());
 
 //database uri, recieved from moongoDB dashboard. Starts connection
