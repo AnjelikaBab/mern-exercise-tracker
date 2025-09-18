@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
+import config from '../config';
 
 export default class EditExercise extends Component {
   constructor(props) {
@@ -112,7 +113,7 @@ export default class EditExercise extends Component {
       return;
     }
 
-    const url = `http://localhost:5001/${this.state.workoutType}/update/${this.state.id}`;
+    const url = `${config.API_URL}/${this.state.workoutType}/update/${this.state.id}`;
     
     console.log('Updating exercise:', exercise);
     console.log('URL:', url);

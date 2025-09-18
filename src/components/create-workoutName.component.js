@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import config from '../config';
 
 export default class CreateWorkoutName extends Component {
   constructor(props) {
@@ -20,7 +21,7 @@ export default class CreateWorkoutName extends Component {
   }
 
   componentDidMount() {
-    axios.get('http://localhost:5001/name/')
+    axios.get(`${config.API_URL}/name/`)
       .then(response => {
         if (response.data.length > 0) {
           this.setState({
@@ -61,7 +62,7 @@ export default class CreateWorkoutName extends Component {
 
     console.log(workout);
 
-    axios.post('http://localhost:5001/name/add', workout)
+    axios.post(`${config.API_URL}/name/add`, workout)
       .then(res => {
         console.log(res.data);
         this.componentDidMount(); // Refresh the list of workouts
@@ -77,7 +78,7 @@ export default class CreateWorkoutName extends Component {
   onRemove(e) {
     e.preventDefault();
 
-    axios.delete(`http://localhost:5001/name/${this.state.workoutToRemove}`)
+    axios.delete(`${config.API_URL}/name/${this.state.workoutToRemove}`)
       .then(res => {
         console.log(res.data);
         this.componentDidMount(); // Refresh the list of workouts

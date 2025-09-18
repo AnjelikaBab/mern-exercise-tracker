@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import config from '../config';
 
 const CardioExercise = props => (
   <div style={{
@@ -167,7 +168,7 @@ export default class ExerciseList extends Component {
   }
 
   loadData() {
-    axios.get('http://localhost:5001/cardioExercises/')
+    axios.get(`${config.API_URL}/cardioExercises/`)
       .then(response => {
         const cardioExercises = response.data;
         this.setState({ cardioExercises });
@@ -177,7 +178,7 @@ export default class ExerciseList extends Component {
         console.log(error);
       });
 
-    axios.get('http://localhost:5001/strengthExercises/')
+    axios.get(`${config.API_URL}/strengthExercises/`)
       .then(response => {
         const strengthExercises = response.data;
         const maxSets = Math.max(...strengthExercises.map(exercise => exercise.sets.length), 0);
@@ -197,7 +198,7 @@ export default class ExerciseList extends Component {
   }
 
   deleteCardioExercise(id) {
-    axios.delete('http://localhost:5001/cardioExercises/' + id)
+    axios.delete(`${config.API_URL}/cardioExercises/` + id)
       .then(response => { console.log(response.data) });
 
     this.setState({
@@ -206,7 +207,7 @@ export default class ExerciseList extends Component {
   }
 
   deleteStrengthExercise(id) {
-    axios.delete('http://localhost:5001/strengthExercises/' + id)
+    axios.delete(`${config.API_URL}/strengthExercises/` + id)
       .then(response => { console.log(response.data) });
 
     this.setState({
@@ -222,6 +223,191 @@ export default class ExerciseList extends Component {
 
     return exercises.map(currentExercise => {
       return <CardioExercise exercise={currentExercise} deleteExercise={this.deleteCardioExercise} editExercise={this.editExercise} key={currentExercise._id} />;
+    });
+  }
+
+  allExercisesList() {
+    // Get filtered cardio exercises
+    let cardioExercises = this.state.cardioExercises
+      .filter(exercise => !this.state.selectedWorkoutName || exercise.workoutName === this.state.selectedWorkoutName);
+
+    // Get filtered strength exercises  
+    let strengthExercises = this.state.strengthExercises
+      .filter(exercise => !this.state.selectedWorkoutName || exercise.workoutName === this.state.selectedWorkoutName);
+
+    console.log('All exercises filtering:', {
+      selectedWorkoutName: this.state.selectedWorkoutName,
+      cardioCount: cardioExercises.length,
+      strengthCount: strengthExercises.length,
+      totalCardio: this.state.cardioExercises.length,
+      totalStrength: this.state.strengthExercises.length
+    });
+
+    // Debug strength exercise workout names
+    if (this.state.selectedWorkoutName) {
+      console.log('Strength exercises before filtering:');
+      this.state.strengthExercises.forEach((exercise, index) => {
+        console.log(`${index}: "${exercise.workoutName}" (selected: "${this.state.selectedWorkoutName}")`);
+        console.log('Match:', exercise.workoutName === this.state.selectedWorkoutName);
+      });
+    }
+
+    // Combine and sort all exercises by date
+    let allExercises = [
+      ...cardioExercises.map(exercise => ({ ...exercise, type: 'cardio' })),
+      ...strengthExercises.map(exercise => ({ ...exercise, type: 'strength' }))
+    ];
+
+    // Sort by date
+    allExercises.sort((a, b) => 
+      this.state.sortDateAsc ? new Date(a.date) - new Date(b.date) : new Date(b.date) - new Date(a.date)
+    );
+
+    // Render exercises
+    return allExercises.map(currentExercise => {
+      if (currentExercise.type === 'cardio') {
+        return <CardioExercise exercise={currentExercise} deleteExercise={this.deleteCardioExercise} editExercise={this.editExercise} key={currentExercise._id} />;
+      } else {
+        // Create strength exercise component inline
+        return (
+          <div key={currentExercise._id} style={{
+            background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
+            borderRadius: '16px',
+            padding: '1.5rem',
+            color: 'white',
+            boxShadow: '0 10px 30px rgba(59, 130, 246, 0.3)',
+            transition: 'all 0.3s ease',
+            position: 'relative',
+            overflow: 'hidden'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'translateY(-5px)';
+            e.currentTarget.style.boxShadow = '0 20px 40px rgba(59, 130, 246, 0.4)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.boxShadow = '0 10px 30px rgba(59, 130, 246, 0.3)';
+          }}
+          >
+            <div style={{
+              position: 'absolute',
+              top: '0',
+              right: '0',
+              width: '100px',
+              height: '100px',
+              background: 'rgba(255,255,255,0.1)',
+              borderRadius: '50%',
+              transform: 'translate(30px, -30px)'
+            }}></div>
+            
+            <div style={{ position: 'relative', zIndex: 1 }}>
+              <h4 style={{ 
+                margin: '0 0 1rem 0', 
+                fontSize: '1.2rem',
+                fontWeight: '600',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem'
+              }}>
+                {currentExercise.workoutName}
+              </h4>
+              
+              <div style={{ 
+                marginBottom: '1rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem'
+              }}>
+                <span style={{ fontSize: '0.85rem', opacity: 0.8 }}>Date:</span>
+                <span style={{ fontWeight: '600' }}>{new Date(currentExercise.date).toLocaleDateString()}</span>
+              </div>
+              
+              <div style={{ 
+                marginBottom: '1rem'
+              }}>
+                <div style={{ fontSize: '0.85rem', opacity: 0.8, marginBottom: '0.5rem' }}>Sets:</div>
+                <div style={{ 
+                  display: 'grid', 
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', 
+                  gap: '0.5rem'
+                }}>
+                  {currentExercise.sets.map((set, index) => (
+                    <div key={index} style={{
+                      background: 'rgba(255,255,255,0.2)',
+                      padding: '0.5rem',
+                      borderRadius: '8px',
+                      textAlign: 'center'
+                    }}>
+                      <div style={{ fontSize: '0.8rem', opacity: 0.8 }}>Set {index + 1}</div>
+                      <div style={{ fontWeight: '600', fontSize: '0.9rem' }}>
+                        {set.weight}kg × {set.reps} reps
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              
+              <div style={{ 
+                display: 'flex', 
+                gap: '0.5rem',
+                justifyContent: 'flex-end'
+              }}>
+                <button 
+                  onClick={() => { 
+                    console.log('Edit button clicked for strength exercise:', currentExercise._id);
+                    this.editExercise(currentExercise._id, 'strength'); 
+                  }}
+                  style={{
+                    background: 'rgba(255,255,255,0.2)',
+                    border: '1px solid rgba(255,255,255,0.3)',
+                    color: 'white',
+                    padding: '0.5rem 1rem',
+                    borderRadius: '8px',
+                    cursor: 'pointer',
+                    fontSize: '0.9rem',
+                    fontWeight: '500',
+                    transition: 'all 0.3s ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.background = 'rgba(255,255,255,0.3)';
+                    e.target.style.transform = 'translateY(-2px)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.background = 'rgba(255,255,255,0.2)';
+                    e.target.style.transform = 'translateY(0)';
+                  }}
+                >
+                  Edit
+                </button>
+                <button 
+                  onClick={() => { this.deleteStrengthExercise(currentExercise._id) }}
+                  style={{
+                    background: 'rgba(255,255,255,0.2)',
+                    border: '1px solid rgba(255,255,255,0.3)',
+                    color: 'white',
+                    padding: '0.5rem 1rem',
+                    borderRadius: '8px',
+                    cursor: 'pointer',
+                    fontSize: '0.9rem',
+                    fontWeight: '500',
+                    transition: 'all 0.3s ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.background = 'rgba(255,255,255,0.3)';
+                    e.target.style.transform = 'translateY(-2px)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.background = 'rgba(255,255,255,0.2)';
+                    e.target.style.transform = 'translateY(0)';
+                  }}
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        );
+      }
     });
   }
 
@@ -386,7 +572,7 @@ export default class ExerciseList extends Component {
   editExercise(id, type) {
     // Fetch the exercise data and navigate to edit page
     const url = type === 'cardio' ? 'cardioExercises' : 'strengthExercises';
-    const fullUrl = `http://localhost:5001/${url}/${id}`;
+    const fullUrl = `${config.API_URL}/${url}/${id}`;
     
     console.log('Fetching exercise data:', { id, type, url, fullUrl });
     
@@ -561,8 +747,7 @@ export default class ExerciseList extends Component {
               gap: '1rem',
               gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))'
             }}>
-              {this.cardioExerciseList()}
-              {this.strengthExerciseList()}
+              {this.allExercisesList()}
             </div>
           </div>
         )}

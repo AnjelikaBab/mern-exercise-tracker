@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
+import config from '../config';
 
 export default class CreateExercise extends Component {
   constructor(props) {
@@ -30,7 +31,7 @@ export default class CreateExercise extends Component {
   }
 
   componentDidMount() {
-    axios.get('http://localhost:5001/name/')
+    axios.get(`${config.API_URL}/name/`)
       .then(response => {
         if (response.data.length > 0) {
           this.setState({
@@ -45,7 +46,7 @@ export default class CreateExercise extends Component {
   }
 
   fetchWorkoutType() {
-    axios.get(`http://localhost:5001/name/${this.state.workoutName}`)
+    axios.get(`${config.API_URL}/name/${this.state.workoutName}`)
       .then(response => {
         this.setState({
           workoutType: response.data.workoutType
@@ -118,7 +119,7 @@ export default class CreateExercise extends Component {
       };
   
       // URL for Cardio exercises
-      var url = 'http://localhost:5001/cardioExercises/add';
+      var url = `${config.API_URL}/cardioExercises/add`;
   
     } else if (this.state.workoutType === 'Strength') {
       exercise = {
@@ -127,7 +128,7 @@ export default class CreateExercise extends Component {
       };
   
       // URL for Strength exercises
-      var url = 'http://localhost:5001/strengthExercises/add';
+      var url = `${config.API_URL}/strengthExercises/add`;
   
     } else {
       console.error('Unknown workout type');
