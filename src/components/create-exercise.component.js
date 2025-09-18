@@ -108,6 +108,9 @@ export default class CreateExercise extends Component {
       date: this.state.date
     };
   
+    // Declare URL variable
+    let url;
+    
     // Conditionally add fields based on workout type
     if (this.state.workoutType === 'Cardio') {
       exercise = {
@@ -119,7 +122,7 @@ export default class CreateExercise extends Component {
       };
   
       // URL for Cardio exercises
-      var url = `${config.API_URL}/cardioExercises/add`;
+      url = `${config.API_URL}/cardioExercises/add`;
   
     } else if (this.state.workoutType === 'Strength') {
       exercise = {
@@ -128,7 +131,7 @@ export default class CreateExercise extends Component {
       };
   
       // URL for Strength exercises
-      var url = `${config.API_URL}/strengthExercises/add`;
+      url = `${config.API_URL}/strengthExercises/add`;
   
     } else {
       console.error('Unknown workout type');
