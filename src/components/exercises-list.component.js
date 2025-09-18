@@ -1,19 +1,136 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
 
 const CardioExercise = props => (
-  <tr>
-    <td>{props.exercise.workoutName}</td>
-    <td>{props.exercise.date.substring(0, 10)}</td>
-    <td>{props.exercise.incline}</td>
-    <td>{props.exercise.distance}</td>
-    <td>{props.exercise.speed}</td>
-    <td>{props.exercise.time}</td>
-    <td>
-      <Link to={"/edit-cardio/" + props.exercise._id}>edit</Link> | <a href="#" onClick={() => { props.deleteExercise(props.exercise._id) }}>delete</a>
-    </td>
-  </tr>
+  <div style={{
+    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    borderRadius: '16px',
+    padding: '1.5rem',
+    color: 'white',
+    boxShadow: '0 10px 30px rgba(102, 126, 234, 0.3)',
+    transition: 'all 0.3s ease',
+    position: 'relative',
+    overflow: 'hidden'
+  }}
+  onMouseEnter={(e) => {
+    e.currentTarget.style.transform = 'translateY(-5px)';
+    e.currentTarget.style.boxShadow = '0 20px 40px rgba(102, 126, 234, 0.4)';
+  }}
+  onMouseLeave={(e) => {
+    e.currentTarget.style.transform = 'translateY(0)';
+    e.currentTarget.style.boxShadow = '0 10px 30px rgba(102, 126, 234, 0.3)';
+  }}
+  >
+    <div style={{
+      position: 'absolute',
+      top: '0',
+      right: '0',
+      width: '100px',
+      height: '100px',
+      background: 'rgba(255,255,255,0.1)',
+      borderRadius: '50%',
+      transform: 'translate(30px, -30px)'
+    }}></div>
+    
+    <div style={{ position: 'relative', zIndex: 1 }}>
+      <h4 style={{ 
+        margin: '0 0 1rem 0', 
+        fontSize: '1.2rem',
+        fontWeight: '600',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '0.5rem'
+      }}>
+        {props.exercise.workoutName}
+      </h4>
+      
+      <div style={{ 
+        display: 'grid', 
+        gridTemplateColumns: 'repeat(2, 1fr)', 
+        gap: '0.75rem',
+        marginBottom: '1rem'
+      }}>
+        <div>
+          <div style={{ fontSize: '0.85rem', opacity: 0.8, marginBottom: '0.25rem' }}>Date</div>
+          <div style={{ fontWeight: '600' }}>{props.exercise.date.substring(0, 10)}</div>
+        </div>
+        <div>
+          <div style={{ fontSize: '0.85rem', opacity: 0.8, marginBottom: '0.25rem' }}>Incline</div>
+          <div style={{ fontWeight: '600' }}>{props.exercise.incline || 'N/A'}</div>
+        </div>
+        <div>
+          <div style={{ fontSize: '0.85rem', opacity: 0.8, marginBottom: '0.25rem' }}>Distance</div>
+          <div style={{ fontWeight: '600' }}>{props.exercise.distance || 'N/A'}</div>
+        </div>
+        <div>
+          <div style={{ fontSize: '0.85rem', opacity: 0.8, marginBottom: '0.25rem' }}>Speed</div>
+          <div style={{ fontWeight: '600' }}>{props.exercise.speed || 'N/A'}</div>
+        </div>
+        <div>
+          <div style={{ fontSize: '0.85rem', opacity: 0.8, marginBottom: '0.25rem' }}>Time</div>
+          <div style={{ fontWeight: '600' }}>{props.exercise.time || 'N/A'}</div>
+        </div>
+      </div>
+      
+      <div style={{ 
+        display: 'flex', 
+        gap: '0.5rem',
+        justifyContent: 'flex-end'
+      }}>
+        <button 
+          onClick={() => { 
+            console.log('Edit button clicked for cardio exercise:', props.exercise._id);
+            props.editExercise(props.exercise._id, 'cardio'); 
+          }}
+          style={{
+            background: 'rgba(255,255,255,0.2)',
+            border: '1px solid rgba(255,255,255,0.3)',
+            color: 'white',
+            padding: '0.5rem 1rem',
+            borderRadius: '8px',
+            cursor: 'pointer',
+            fontSize: '0.9rem',
+            fontWeight: '500',
+            transition: 'all 0.3s ease'
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.background = 'rgba(255,255,255,0.3)';
+            e.target.style.transform = 'translateY(-2px)';
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.background = 'rgba(255,255,255,0.2)';
+            e.target.style.transform = 'translateY(0)';
+          }}
+        >
+          Edit
+        </button>
+        <button 
+          onClick={() => { props.deleteExercise(props.exercise._id) }}
+          style={{
+            background: 'rgba(255,255,255,0.2)',
+            border: '1px solid rgba(255,255,255,0.3)',
+            color: 'white',
+            padding: '0.5rem 1rem',
+            borderRadius: '8px',
+            cursor: 'pointer',
+            fontSize: '0.9rem',
+            fontWeight: '500',
+            transition: 'all 0.3s ease'
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.background = 'rgba(255,255,255,0.3)';
+            e.target.style.transform = 'translateY(-2px)';
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.background = 'rgba(255,255,255,0.2)';
+            e.target.style.transform = 'translateY(0)';
+          }}
+        >
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
 );
 
 export default class ExerciseList extends Component {
@@ -25,19 +142,31 @@ export default class ExerciseList extends Component {
     this.onChangeFilter = this.onChangeFilter.bind(this);
     this.onChangeWorkoutName = this.onChangeWorkoutName.bind(this);
     this.toggleSortDate = this.toggleSortDate.bind(this);
+    this.editExercise = this.editExercise.bind(this);
 
     this.state = {
       cardioExercises: [],
       strengthExercises: [],
       workoutNames: [],
       maxSets: 0,
-      filter: 'Cardio', // Default filter is set to 'Cardio'
+      filter: 'All', // Default filter is set to 'All'
       selectedWorkoutName: '', // Default workout name filter is empty
       sortDateAsc: true // Default sorting order is ascending
     };
   }
 
   componentDidMount() {
+    this.loadData();
+  }
+
+  componentDidUpdate(prevProps) {
+    // Refresh data when navigating back to this component
+    if (prevProps.location !== this.props.location) {
+      this.loadData();
+    }
+  }
+
+  loadData() {
     axios.get('http://localhost:5001/cardioExercises/')
       .then(response => {
         const cardioExercises = response.data;
@@ -92,7 +221,7 @@ export default class ExerciseList extends Component {
     exercises.sort((a, b) => this.state.sortDateAsc ? new Date(a.date) - new Date(b.date) : new Date(b.date) - new Date(a.date));
 
     return exercises.map(currentExercise => {
-      return <CardioExercise exercise={currentExercise} deleteExercise={this.deleteCardioExercise} key={currentExercise._id} />;
+      return <CardioExercise exercise={currentExercise} deleteExercise={this.deleteCardioExercise} editExercise={this.editExercise} key={currentExercise._id} />;
     });
   }
 
@@ -103,22 +232,142 @@ export default class ExerciseList extends Component {
     exercises.sort((a, b) => this.state.sortDateAsc ? new Date(a.date) - new Date(b.date) : new Date(b.date) - new Date(a.date));
 
     return exercises.map(currentExercise => (
-      <tr key={currentExercise._id}>
-        <td>{currentExercise.workoutName}</td>
-        <td>{new Date(currentExercise.date).toLocaleDateString()}</td>
+      <div key={currentExercise._id} style={{
+        background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
+        borderRadius: '16px',
+        padding: '1.5rem',
+        color: 'white',
+        boxShadow: '0 10px 30px rgba(59, 130, 246, 0.3)',
+        transition: 'all 0.3s ease',
+        position: 'relative',
+        overflow: 'hidden'
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.transform = 'translateY(-5px)';
+        e.currentTarget.style.boxShadow = '0 20px 40px rgba(59, 130, 246, 0.4)';
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = 'translateY(0)';
+        e.currentTarget.style.boxShadow = '0 10px 30px rgba(59, 130, 246, 0.3)';
+      }}
+      >
+        <div style={{
+          position: 'absolute',
+          top: '0',
+          right: '0',
+          width: '100px',
+          height: '100px',
+          background: 'rgba(255,255,255,0.1)',
+          borderRadius: '50%',
+          transform: 'translate(30px, -30px)'
+        }}></div>
+        
+        <div style={{ position: 'relative', zIndex: 1 }}>
+          <h4 style={{ 
+            margin: '0 0 1rem 0', 
+            fontSize: '1.2rem',
+            fontWeight: '600',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem'
+          }}>
+            {currentExercise.workoutName}
+          </h4>
+          
+          <div style={{ 
+            marginBottom: '1rem',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem'
+          }}>
+            <span style={{ fontSize: '0.85rem', opacity: 0.8 }}>Date:</span>
+            <span style={{ fontWeight: '600' }}>{new Date(currentExercise.date).toLocaleDateString()}</span>
+          </div>
+          
+          <div style={{ 
+            marginBottom: '1rem'
+          }}>
+            <div style={{ fontSize: '0.85rem', opacity: 0.8, marginBottom: '0.5rem' }}>Sets:</div>
+            <div style={{ 
+              display: 'grid', 
+              gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', 
+              gap: '0.5rem'
+            }}>
         {currentExercise.sets.map((set, index) => (
-          <td key={index}>
-            <div>Weight: {set.weight}</div>
-            <div>Reps: {set.reps}</div>
-          </td>
-        ))}
-        {[...Array(Math.max(this.state.maxSets - currentExercise.sets.length, 0))].map((_, index) => (
-          <td key={`empty-${index}`}></td>
-        ))}
-        <td>
-          <Link to={"/edit-strength/" + currentExercise._id}>edit</Link> | <a href="#" onClick={() => { this.deleteStrengthExercise(currentExercise._id) }}>delete</a>
-        </td>
-      </tr>
+                <div key={index} style={{
+                  background: 'rgba(255,255,255,0.2)',
+                  padding: '0.5rem',
+                  borderRadius: '8px',
+                  textAlign: 'center'
+                }}>
+                  <div style={{ fontSize: '0.8rem', opacity: 0.8 }}>Set {index + 1}</div>
+                  <div style={{ fontWeight: '600', fontSize: '0.9rem' }}>
+                    {set.weight}kg × {set.reps} reps
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          
+          <div style={{ 
+            display: 'flex', 
+            gap: '0.5rem',
+            justifyContent: 'flex-end'
+          }}>
+            <button 
+              onClick={() => { 
+                console.log('Edit button clicked for strength exercise:', currentExercise._id);
+                this.editExercise(currentExercise._id, 'strength'); 
+              }}
+              style={{
+                background: 'rgba(255,255,255,0.2)',
+                border: '1px solid rgba(255,255,255,0.3)',
+                color: 'white',
+                padding: '0.5rem 1rem',
+                borderRadius: '8px',
+                cursor: 'pointer',
+                fontSize: '0.9rem',
+                fontWeight: '500',
+                transition: 'all 0.3s ease'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.background = 'rgba(255,255,255,0.3)';
+                e.target.style.transform = 'translateY(-2px)';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.background = 'rgba(255,255,255,0.2)';
+                e.target.style.transform = 'translateY(0)';
+              }}
+            >
+              Edit
+            </button>
+            <button 
+              onClick={() => { this.deleteStrengthExercise(currentExercise._id) }}
+              style={{
+                background: 'rgba(255,255,255,0.2)',
+                border: '1px solid rgba(255,255,255,0.3)',
+                color: 'white',
+                padding: '0.5rem 1rem',
+                borderRadius: '8px',
+                cursor: 'pointer',
+                fontSize: '0.9rem',
+                fontWeight: '500',
+                transition: 'all 0.3s ease'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.background = 'rgba(255,255,255,0.3)';
+                e.target.style.transform = 'translateY(-2px)';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.background = 'rgba(255,255,255,0.2)';
+                e.target.style.transform = 'translateY(0)';
+              }}
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
     ));
   }
 
@@ -134,82 +383,268 @@ export default class ExerciseList extends Component {
     this.setState(prevState => ({ sortDateAsc: !prevState.sortDateAsc }));
   }
 
+  editExercise(id, type) {
+    // Fetch the exercise data and navigate to edit page
+    const url = type === 'cardio' ? 'cardioExercises' : 'strengthExercises';
+    const fullUrl = `http://localhost:5001/${url}/${id}`;
+    
+    console.log('Fetching exercise data:', { id, type, url, fullUrl });
+    
+    // Test if the URL is accessible
+    fetch(fullUrl)
+      .then(response => {
+        console.log('Fetch response status:', response.status);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('Exercise data fetched successfully with fetch:', data);
+        this.props.onEdit({
+          id: id,
+          type: type,
+          data: data
+        });
+      })
+      .catch(error => {
+        console.error('Error with fetch:', error);
+        
+        // Fallback to axios
+        axios.get(fullUrl)
+          .then(response => {
+            console.log('Exercise data fetched successfully with axios:', response.data);
+            const exerciseData = response.data;
+            this.props.onEdit({
+              id: id,
+              type: type,
+              data: exerciseData
+            });
+          })
+          .catch(axiosError => {
+            console.error('Error with axios:', axiosError);
+            console.error('Error response:', axiosError.response?.data);
+            console.error('Error status:', axiosError.response?.status);
+            alert(`Error loading exercise data: ${axiosError.response?.data || axiosError.message}`);
+          });
+      });
+  }
+
   render() {
+    console.log('ExercisesList component rendering');
     const filteredWorkoutNames = this.state.filter === 'Cardio'
       ? this.state.cardioExercises.map(exercise => exercise.workoutName)
-      : this.state.strengthExercises.map(exercise => exercise.workoutName);
+      : this.state.filter === 'Strength'
+      ? this.state.strengthExercises.map(exercise => exercise.workoutName)
+      : [...this.state.cardioExercises.map(exercise => exercise.workoutName), 
+         ...this.state.strengthExercises.map(exercise => exercise.workoutName)];
 
     return (
       <div>
-        <h3>Filter Exercises</h3>
-        <div className="form-group">
-          <label>Exercise Type: </label>
+        <div style={{ marginBottom: '2rem' }}>
+          <h2 style={{ 
+            color: '#2d3748', 
+            marginBottom: '1.5rem', 
+            fontSize: '1.8rem',
+            fontWeight: '700',
+            textAlign: 'center'
+          }}>
+            Exercise Dashboard
+          </h2>
+          
+          <div style={{ 
+            display: 'flex', 
+            gap: '1rem', 
+            justifyContent: 'center',
+            flexWrap: 'wrap',
+            marginBottom: '2rem'
+          }}>
+            <div style={{ minWidth: '200px' }}>
+              <label style={{ 
+                display: 'block', 
+                marginBottom: '0.5rem', 
+                fontWeight: '600',
+                color: '#4a5568'
+              }}>
+                Exercise Type
+              </label>
           <select
             required
-            className="form-control"
+                style={{
+                  width: '100%',
+                  padding: '0.75rem 1rem',
+                  borderRadius: '12px',
+                  border: '2px solid #e2e8f0',
+                  fontSize: '1rem',
+                  backgroundColor: 'white',
+                  transition: 'all 0.3s ease',
+                  outline: 'none'
+                }}
             value={this.state.filter}
             onChange={this.onChangeFilter}
+                onFocus={(e) => e.target.style.borderColor = '#667eea'}
+                onBlur={(e) => e.target.style.borderColor = '#e2e8f0'}
           >
+            <option value="All">All</option>
             <option value="Cardio">Cardio</option>
             <option value="Strength">Strength</option>
           </select>
         </div>
 
-        <div className="form-group">
-          <label>Workout Name: </label>
+            <div style={{ minWidth: '200px' }}>
+              <label style={{ 
+                display: 'block', 
+                marginBottom: '0.5rem', 
+                fontWeight: '600',
+                color: '#4a5568'
+              }}>
+                Workout Name
+              </label>
           <select
-            className="form-control"
+                style={{
+                  width: '100%',
+                  padding: '0.75rem 1rem',
+                  borderRadius: '12px',
+                  border: '2px solid #e2e8f0',
+                  fontSize: '1rem',
+                  backgroundColor: 'white',
+                  transition: 'all 0.3s ease',
+                  outline: 'none'
+                }}
             value={this.state.selectedWorkoutName}
             onChange={this.onChangeWorkoutName}
+                onFocus={(e) => e.target.style.borderColor = '#667eea'}
+                onBlur={(e) => e.target.style.borderColor = '#e2e8f0'}
           >
-            <option value="">All</option>
+                <option value="">All Workouts</option>
             {filteredWorkoutNames.map((name, index) => (
               <option key={index} value={name}>{name}</option>
             ))}
           </select>
+            </div>
+          </div>
         </div>
+
+        {this.state.filter === 'All' && (
+          <div>
+            <h3 style={{ 
+              color: '#2d3748', 
+              marginBottom: '1.5rem',
+              fontSize: '1.5rem',
+              fontWeight: '600',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem'
+            }}>
+              All Exercises
+              <button
+                onClick={this.toggleSortDate}
+                style={{
+                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '8px',
+                  padding: '0.5rem 1rem',
+                  fontSize: '0.9rem',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                  marginLeft: 'auto'
+                }}
+                onMouseEnter={(e) => e.target.style.transform = 'translateY(-2px)'}
+                onMouseLeave={(e) => e.target.style.transform = 'translateY(0)'}
+              >
+                Sort by Date {this.state.sortDateAsc ? '↑' : '↓'}
+              </button>
+            </h3>
+            <div style={{ 
+              display: 'grid', 
+              gap: '1rem',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))'
+            }}>
+              {this.cardioExerciseList()}
+              {this.strengthExerciseList()}
+            </div>
+          </div>
+        )}
 
         {this.state.filter === 'Cardio' && (
           <div>
-            <h3>Cardio Exercises</h3>
-            <table className="table">
-              <thead className="thead-light">
-                <tr>
-                  <th>Workout Name</th>
-                  <th onClick={this.toggleSortDate} style={{ cursor: 'pointer' }}>Date {this.state.sortDateAsc ? '↑' : '↓'}</th>
-                  <th>Incline</th>
-                  <th>Distance</th>
-                  <th>Speed</th>
-                  <th>Time</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
+            <h3 style={{ 
+              color: '#2d3748', 
+              marginBottom: '1.5rem',
+              fontSize: '1.5rem',
+              fontWeight: '600',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem'
+            }}>
+              Cardio Exercises
+              <button
+                onClick={this.toggleSortDate}
+                style={{
+                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '8px',
+                  padding: '0.5rem 1rem',
+                  fontSize: '0.9rem',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                  marginLeft: 'auto'
+                }}
+                onMouseEnter={(e) => e.target.style.transform = 'translateY(-2px)'}
+                onMouseLeave={(e) => e.target.style.transform = 'translateY(0)'}
+              >
+                Sort by Date {this.state.sortDateAsc ? '↑' : '↓'}
+              </button>
+            </h3>
+            <div style={{ 
+              display: 'grid', 
+              gap: '1rem',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))'
+            }}>
                 {this.cardioExerciseList()}
-              </tbody>
-            </table>
+            </div>
           </div>
         )}
 
         {this.state.filter === 'Strength' && (
           <div>
-            <h3>Strength Exercises</h3>
-            <div style={{ overflowX: 'auto' }}>
-              <table className="table">
-                <thead className="thead-light">
-                  <tr>
-                    <th>Workout Name</th>
-                    <th onClick={this.toggleSortDate} style={{ cursor: 'pointer' }}>Date {this.state.sortDateAsc ? '↑' : '↓'}</th>
-                    {[...Array(this.state.maxSets)].map((_, index) => (
-                      <th key={index}>Set {index + 1}</th>
-                    ))}
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
+            <h3 style={{ 
+              color: '#2d3748', 
+              marginBottom: '1.5rem',
+              fontSize: '1.5rem',
+              fontWeight: '600',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem'
+            }}>
+              Strength Exercises
+              <button
+                onClick={this.toggleSortDate}
+                style={{
+                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '8px',
+                  padding: '0.5rem 1rem',
+                  fontSize: '0.9rem',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                  marginLeft: 'auto'
+                }}
+                onMouseEnter={(e) => e.target.style.transform = 'translateY(-2px)'}
+                onMouseLeave={(e) => e.target.style.transform = 'translateY(0)'}
+              >
+                Sort by Date {this.state.sortDateAsc ? '↑' : '↓'}
+              </button>
+            </h3>
+            <div style={{ 
+              display: 'grid', 
+              gap: '1rem',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(400px, 1fr))'
+            }}>
                   {this.strengthExerciseList()}
-                </tbody>
-              </table>
             </div>
           </div>
         )}

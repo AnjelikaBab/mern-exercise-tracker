@@ -91,58 +91,86 @@ export default class CreateWorkoutName extends Component {
 
   render() {
     return (
-      <div>
-        <h3>Add New Workouts</h3>
-        <form onSubmit={this.onSubmit}>
-          <div className="form-group">
-            <label>Workout Name: </label>
-            <input
-              type="text"
-              required
-              className="form-control"
-              value={this.state.workoutName}
-              onChange={this.onChangeWorkoutName}
-            />
-          </div>
-          <div className="form-group">
-            <label>Workout Type: </label>
-            <select
-              required
-              className="form-control"
-              value={this.state.workoutType}
-              onChange={this.onChangeWorkoutType}
-            >
-              <option value="" disabled>Select type</option>
-              <option value="Cardio">Cardio</option>
-              <option value="Strength">Strength</option>
-            </select>
-          </div>
-          <div className="form-group">
-            <input type="submit" value="Add" className="customBtn" />
-          </div>
-        </form>
-        <h3>Remove Workouts</h3>
-        <form onSubmit={this.onRemove}>
-          <div className="form-group">
-            <label>Select Workout to Remove: </label>
-            <select
-              required
-              className="form-control"
-              value={this.state.workoutToRemove}
-              onChange={this.onChangeWorkoutToRemove}
-            >
-              <option value="" disabled>Select workout</option>
-              {this.state.workouts.map(workout => (
-                <option key={workout} value={workout}>
-                  {workout}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="form-group">
-            <input type="submit" value="Remove" className="customBtn" />
-          </div>
-        </form>
+      <div className="space-y-8">
+        {/* Add New Workouts Section */}
+        <div className="bg-white/80 p-8 rounded-2xl shadow-xl border border-white/20">
+          <h3 className="text-gray-800 mb-6 text-2xl font-bold text-center">
+            Add New Workouts
+          </h3>
+          <form onSubmit={this.onSubmit} className="space-y-6">
+            <div>
+              <label className="block mb-2 font-semibold text-gray-600 text-base">
+                Workout Name:
+              </label>
+              <input
+                type="text"
+                required
+                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 text-base bg-white transition-all duration-300 outline-none focus:border-blue-500"
+                value={this.state.workoutName}
+                onChange={this.onChangeWorkoutName}
+                placeholder="Enter workout name"
+              />
+            </div>
+            <div>
+              <label className="block mb-2 font-semibold text-gray-600 text-base">
+                Workout Type:
+              </label>
+              <select
+                required
+                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 text-base bg-white transition-all duration-300 outline-none focus:border-blue-500"
+                value={this.state.workoutType}
+                onChange={this.onChangeWorkoutType}
+              >
+                <option value="" disabled>Select type</option>
+                <option value="Cardio">Cardio</option>
+                <option value="Strength">Strength</option>
+              </select>
+            </div>
+            <div className="text-center">
+              <button 
+                type="submit" 
+                className="bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none px-4 py-2 rounded-lg text-sm font-medium cursor-pointer transition-all duration-300 shadow-md hover:-translate-y-0.5 hover:shadow-lg"
+              >
+                Add Workout
+              </button>
+            </div>
+          </form>
+        </div>
+
+        {/* Remove Workouts Section */}
+        <div className="bg-white/80 p-8 rounded-2xl shadow-xl border border-white/20">
+          <h3 className="text-gray-800 mb-6 text-2xl font-bold text-center">
+            Remove Workouts
+          </h3>
+          <form onSubmit={this.onRemove} className="space-y-6">
+            <div>
+              <label className="block mb-2 font-semibold text-gray-600 text-base">
+                Select Workout to Remove:
+              </label>
+              <select
+                required
+                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 text-base bg-white transition-all duration-300 outline-none focus:border-red-500"
+                value={this.state.workoutToRemove}
+                onChange={this.onChangeWorkoutToRemove}
+              >
+                <option value="" disabled>Select workout</option>
+                {this.state.workouts.map(workout => (
+                  <option key={workout} value={workout}>
+                    {workout}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="text-center">
+              <button 
+                type="submit" 
+                className="bg-gradient-to-r from-red-500 to-red-600 text-white border-none px-4 py-2 rounded-lg text-sm font-medium cursor-pointer transition-all duration-300 shadow-md hover:-translate-y-0.5 hover:shadow-lg"
+              >
+                Remove Workout
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     );
   }

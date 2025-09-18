@@ -33,3 +33,29 @@
     transform: rotate(360deg);
   }
 }
+
+/* Light placeholder text for better visibility */
+input.placeholder-light::placeholder {
+  color: rgba(255, 255, 255, 0.95) !important;
+  opacity: 1 !important;
+}
+
+input.placeholder-light::-webkit-input-placeholder {
+  color: rgba(255, 255, 255, 0.95) !important;
+  opacity: 1 !important;
+}
+
+input.placeholder-light::-moz-placeholder {
+  color: rgba(255, 255, 255, 0.95) !important;
+  opacity: 1 !important;
+}
+
+input.placeholder-light:-ms-input-placeholder {
+  color: rgba(255, 255, 255, 0.95) !important;
+  opacity: 1 !important;
+}
+
+input.placeholder-light::-ms-input-placeholder {
+  color: rgba(255, 255, 255, 0.95) !important;
+  opacity: 1 !important;
+}

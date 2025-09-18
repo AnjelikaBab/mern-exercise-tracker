@@ -140,20 +140,28 @@ export default class CreateExercise extends Component {
       .then(res => console.log(res.data))
       .catch(err => console.error('Error: ' + err));
 
-      window.location = '/create';
+      // Navigate back to home page
+      if (this.props.onNavigate) {
+        this.props.onNavigate('home');
+      }
   }
   
 
   render() {
+    console.log('CreateExercise component rendering');
     return (
       <div>
-        <h3>Create New Exercise Log</h3>
-        <form onSubmit={this.onSubmit}>
-          <div className="form-group">
-            <label>Workout Name: </label>
+        <h2 className="text-gray-800 mb-8 text-3xl font-bold text-center flex items-center justify-center gap-2">
+          Create New Exercise Log
+        </h2>
+        <form onSubmit={this.onSubmit} className="bg-white/80 p-8 rounded-2xl shadow-xl border border-white/20">
+          <div className="mb-6">
+            <label className="block mb-2 font-semibold text-gray-600 text-base">
+              Workout Name
+            </label>
             <select
               required
-              className="form-control"
+              className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 text-base bg-white transition-all duration-300 outline-none focus:border-blue-500"
               value={this.state.workoutName}
               onChange={this.onChangeWorkoutName}
             >
@@ -166,95 +174,146 @@ export default class CreateExercise extends Component {
           </div>
   
           {this.state.workoutType === 'Cardio' && (
-            <>
-              <div className="form-group">
-                <label>Incline: </label>
-                <input
-                  type="string"
-                  className="form-control"
-                  value={this.state.incline}
-                  onChange={e => this.setState({ incline: e.target.value })}
-                />
+            <div className="bg-gradient-to-br from-blue-500 to-purple-600 p-6 rounded-xl mb-6 text-white">
+              <h4 className="m-0 mb-4 text-xl font-semibold">
+                Cardio Details
+              </h4>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block mb-2 font-medium text-sm opacity-90">
+                    Incline
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g., 5%"
+                    className="w-full px-4 py-3 rounded-lg border-none text-base bg-white/20 text-white outline-none transition-all duration-300 focus:bg-white/30 placeholder-light"
+                    value={this.state.incline}
+                    onChange={e => this.setState({ incline: e.target.value })}
+                    onFocus={(e) => e.target.style.backgroundColor = 'rgba(255,255,255,0.3)'}
+                    onBlur={(e) => e.target.style.backgroundColor = 'rgba(255,255,255,0.2)'}
+                  />
+                </div>
+                <div>
+                  <label className="block mb-2 font-medium text-sm opacity-90">
+                    Distance
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g., 5km"
+                    className="w-full px-4 py-3 rounded-lg border-none text-base bg-white/20 text-white outline-none transition-all duration-300 focus:bg-white/30 placeholder-light"
+                    value={this.state.distance}
+                    onChange={e => this.setState({ distance: e.target.value })}
+                    onFocus={(e) => e.target.style.backgroundColor = 'rgba(255,255,255,0.3)'}
+                    onBlur={(e) => e.target.style.backgroundColor = 'rgba(255,255,255,0.2)'}
+                  />
+                </div>
+                <div>
+                  <label className="block mb-2 font-medium text-sm opacity-90">
+                    Speed
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g., 10 km/h"
+                    className="w-full px-4 py-3 rounded-lg border-none text-base bg-white/20 text-white outline-none transition-all duration-300 focus:bg-white/30 placeholder-light"
+                    value={this.state.speed}
+                    onChange={e => this.setState({ speed: e.target.value })}
+                    onFocus={(e) => e.target.style.backgroundColor = 'rgba(255,255,255,0.3)'}
+                    onBlur={(e) => e.target.style.backgroundColor = 'rgba(255,255,255,0.2)'}
+                  />
+                </div>
+                <div>
+                  <label className="block mb-2 font-medium text-sm opacity-90">
+                    Time
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g., 30 min"
+                    className="w-full px-4 py-3 rounded-lg border-none text-base bg-white/20 text-white outline-none transition-all duration-300 focus:bg-white/30 placeholder-light"
+                    value={this.state.time}
+                    onChange={e => this.setState({ time: e.target.value })}
+                    onFocus={(e) => e.target.style.backgroundColor = 'rgba(255,255,255,0.3)'}
+                    onBlur={(e) => e.target.style.backgroundColor = 'rgba(255,255,255,0.2)'}
+                  />
+                </div>
               </div>
-              <div className="form-group">
-                <label>Distance: </label>
-                <input
-                  type="string"
-                  className="form-control"
-                  value={this.state.distance}
-                  onChange={e => this.setState({ distance: e.target.value })}
-                />
-              </div>
-              <div className="form-group">
-                <label>Speed: </label>
-                <input
-                  type="string"
-                  className="form-control"
-                  value={this.state.speed}
-                  onChange={e => this.setState({ speed: e.target.value })}
-                />
-              </div>
-              <div className="form-group">
-                <label>Time: </label>
-                <input
-                  type="string"
-                  className="form-control"
-                  value={this.state.time}
-                  onChange={e => this.setState({ time: e.target.value })}
-                />
-              </div>
-            </>
+            </div>
           )}
   
           {this.state.workoutType === 'Strength' && (
-            <>
+            <div className="bg-gradient-to-br from-blue-500 to-blue-700 p-6 rounded-xl mb-6 text-white">
+              <h4 className="m-0 mb-4 text-xl font-semibold">
+                Strength Details
+              </h4>
               {this.state.sets.map((set, index) => (
-                <div key={index} className="form-group">
-                  <label>Set {index + 1}</label>
-                  <div className="form-row">
-                    <div className="col">
+                <div key={index} className="mb-4 bg-white/10 p-4 rounded-lg">
+                  <label className="block mb-2 font-medium text-sm opacity-90">
+                    Set {index + 1}
+                  </label>
+                  <div className='grid grid-cols-[1fr_1fr_auto] gap-2 items-end'>
+                    <div>
                       <input
-                        type="string"
-                        className="form-control"
+                        type="text"
                         name="weight"
-                        placeholder="Weight"
+                        placeholder="Weight (kg)"
+                        className="w-full px-4 py-3 rounded-lg border-none text-base bg-white/20 text-white outline-none transition-all duration-300 focus:bg-white/30 placeholder-light"
                         value={set.weight}
                         onChange={e => this.onChangeSets(index, e)}
+                        onFocus={(e) => e.target.style.backgroundColor = 'rgba(255,255,255,0.3)'}
+                        onBlur={(e) => e.target.style.backgroundColor = 'rgba(255,255,255,0.2)'}
                       />
                     </div>
-                    <div className="col">
+                    <div>
                       <input
-                        type="string"
-                        className="form-control"
+                        type="text"
                         name="reps"
                         placeholder="Reps"
+                        className="w-full px-4 py-3 rounded-lg border-none text-base bg-white/20 text-white outline-none transition-all duration-300 focus:bg-white/30 placeholder-light"
                         value={set.reps}
                         onChange={e => this.onChangeSets(index, e)}
+                        onFocus={(e) => e.target.style.backgroundColor = 'rgba(255,255,255,0.3)'}
+                        onBlur={(e) => e.target.style.backgroundColor = 'rgba(255,255,255,0.2)'}
                       />
                     </div>
-                    <div className="col">
-                      <button className="customBtn" type="button" onClick={() => this.removeSet(index)}>Remove</button>
-                    </div>
+                    <button 
+                      type="button" 
+                      onClick={() => this.removeSet(index)}
+                      className="bg-white/20 border border-white/30 text-white px-4 py-3 rounded-lg cursor-pointer text-sm font-medium transition-all duration-300 hover:bg-white/30 hover:-translate-y-0.5"
+                    >
+                      ×
+                    </button>
                   </div>
                 </div>
               ))}
-              <div className="form-group">
-                <button className="customBtn" type="button" onClick={this.addSet}>Add Set</button>
-              </div>
-            </>
+              <button 
+                type="button" 
+                onClick={this.addSet}
+                className="bg-white/20 border border-white/30 text-white px-6 py-3 rounded-lg cursor-pointer text-base font-medium transition-all duration-300 w-full hover:bg-white/30 hover:-translate-y-0.5"
+              >
+                Add Set
+              </button>
+            </div>
           )}
-  
-          <div className="form-group">
-            <label>Date: </label>
-            <div>
+
+          <div className="mb-6">
+            <label className="block mb-2 font-semibold text-gray-600 text-base">
+              Date
+            </label>
+            <div className="bg-white rounded-xl border-2 border-gray-200 p-2 transition-all duration-300">
               <DatePicker
                 selected={this.state.date}
                 onChange={this.onChangeDate}
+                className="w-full border-none outline-none"
               />
             </div>
           </div>
-          <div className="form-group">
-            <input type="submit" value="Create Exercise Log" className="customBtn" />
+          
+          <div className="text-center">
+            <button 
+              type="submit" 
+              className="bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none px-8 py-4 rounded-xl text-lg font-semibold cursor-pointer transition-all duration-300 shadow-lg hover:-translate-y-1 hover:shadow-xl min-w-[200px]"
+            >
+              Create Exercise Log
+            </button>
           </div>
         </form>
       </div>

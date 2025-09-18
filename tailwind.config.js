@@ -13,10 +13,12 @@ module.exports = {
         '2xl': '6rem',
       },
     },
-    colors: {
-      text: "#FFFFFF",        // Use a valid hex code with #
-      buttonCol: "#593F5F",   // Use a valid hex code with #
-      backgroundCol: "#9479A0" // Use a valid hex code with #
+    extend: {
+      colors: {
+        text: "#FFFFFF",        // Use a valid hex code with #
+        buttonCol: "#593F5F",   // Use a valid hex code with #
+        backgroundCol: "#9479A0" // Use a valid hex code with #
+      },
     },
   },
   plugins: [

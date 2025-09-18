@@ -30,35 +30,22 @@ export default class EditExercise extends Component {
   }
 
   componentDidMount() {
-    console.log(this.state.workoutName)
-    const { id } = this.props.match.params;
-    const currentUrl = window.location.pathname;
-    let type;
-
-    if (currentUrl.includes('/edit-cardio/')) {
-      type = 'cardioExercises';
-    } else if (currentUrl.includes('/edit-strength/')) {
-      type = 'strengthExercises';
+    if (this.props.editData) {
+      const { id, type, data } = this.props.editData;
+      const workoutType = type === 'cardio' ? 'cardioExercises' : 'strengthExercises';
+      
+      this.setState({
+        id: id,
+        workoutType: workoutType,
+        workoutName: data.workoutName,
+        date: new Date(data.date),
+        incline: data.incline || '',
+        distance: data.distance || '',
+        speed: data.speed || '',
+        time: data.time || '',
+        sets: data.sets && data.sets.length > 0 ? data.sets : [{ weight: '', reps: '' }]
+      });
     }
-
-    this.setState({ workoutType: type }, () => {
-      axios.get(`http://localhost:5001/${this.state.workoutType}/${id}`)
-        .then(response => {
-          const data = response.data;
-          this.setState({
-            workoutName: data.workoutName,
-            date: new Date(data.date),
-            incline: data.incline || '',
-            distance: data.distance || '',
-            speed: data.speed || '',
-            time: data.time || '',
-            sets: data.sets && data.sets.length > 0 ? data.sets : [{ weight: '', reps: '' }]
-          });
-        })
-        .catch(error => {
-          console.log(error);
-        });
-    });
   }
 
   onChangeDate(date) {
@@ -125,107 +112,400 @@ export default class EditExercise extends Component {
       return;
     }
 
-    const url = `http://localhost:5001/${this.state.workoutType}/update/${this.props.match.params.id}`;
+    const url = `http://localhost:5001/${this.state.workoutType}/update/${this.state.id}`;
+    
+    console.log('Updating exercise:', exercise);
+    console.log('URL:', url);
+    console.log('Workout type:', this.state.workoutType);
 
     axios.post(url, exercise)
-      .then(res => console.log(res.data))
-      .catch(err => console.error('Error: ' + err));
-
-    window.location = '/';
+      .then(res => {
+        console.log('Update successful:', res.data);
+        // Navigate back to home page
+        if (this.props.onNavigate) {
+          this.props.onNavigate('home');
+        }
+      })
+      .catch(err => {
+        console.error('Update error:', err);
+        console.error('Error response:', err.response?.data);
+      });
   }
 
   render() {
     return (
       <div>
-        <h3>Edit {this.state.workoutType.replace('Exercises', '')} Exercise Log</h3>
-        <form onSubmit={this.onSubmit}>
-          <div className="form-group">
-            <label>Workout Name: </label>
+        <h2 style={{ 
+          color: '#2d3748', 
+          marginBottom: '2rem', 
+          fontSize: '1.8rem',
+          fontWeight: '700',
+          textAlign: 'center',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '0.5rem'
+        }}>
+          Edit {this.state.workoutType.replace('Exercises', '')} Exercise Log
+        </h2>
+        <form onSubmit={this.onSubmit} style={{
+          background: 'rgba(255, 255, 255, 0.8)',
+          padding: '2rem',
+          borderRadius: '16px',
+          boxShadow: '0 10px 30px rgba(0,0,0,0.1)',
+          border: '1px solid rgba(255,255,255,0.2)'
+        }}>
+          <div style={{ marginBottom: '1.5rem' }}>
+            <label style={{ 
+              display: 'block', 
+              marginBottom: '0.5rem', 
+              fontWeight: '600',
+              color: '#4a5568',
+              fontSize: '1rem'
+            }}>
+              Workout Name
+            </label>
             <input
               type="text"
-              className="form-control"
+              style={{
+                width: '100%',
+                padding: '0.75rem 1rem',
+                borderRadius: '12px',
+                border: '2px solid #e2e8f0',
+                fontSize: '1rem',
+                backgroundColor: '#f7fafc',
+                color: '#4a5568',
+                outline: 'none'
+              }}
               value={this.state.workoutName}
-              readOnly // Makes the input field read-only
+              readOnly
             />
           </div>
-          <div className="form-group">
-            <label>Date: </label>
-            <div>
+          <div style={{ marginBottom: '1.5rem' }}>
+            <label style={{ 
+              display: 'block', 
+              marginBottom: '0.5rem', 
+              fontWeight: '600',
+              color: '#4a5568',
+              fontSize: '1rem'
+            }}>
+              Date
+            </label>
+            <div style={{
+              background: 'white',
+              borderRadius: '12px',
+              border: '2px solid #e2e8f0',
+              padding: '0.5rem',
+              transition: 'all 0.3s ease'
+            }}>
               <DatePicker
                 selected={this.state.date}
                 onChange={this.onChangeDate}
+                style={{
+                  width: '100%',
+                  border: 'none',
+                  outline: 'none'
+                }}
               />
             </div>
           </div>
           {this.state.workoutType === 'cardioExercises' && (
-            <>
-              <div className="form-group">
-                <label>Incline: </label>
-                <input
-                  type="string"
-                  className="form-control"
-                  value={this.state.incline}
-                  onChange={this.onChangeIncline}
-                />
+            <div style={{
+              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              padding: '1.5rem',
+              borderRadius: '12px',
+              marginBottom: '1.5rem',
+              color: 'white'
+            }}>
+              <h4 style={{ margin: '0 0 1rem 0', fontSize: '1.2rem', fontWeight: '600' }}>
+                Cardio Details
+              </h4>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem' }}>
+                <div>
+                  <label style={{ 
+                    display: 'block', 
+                    marginBottom: '0.5rem', 
+                    fontWeight: '500',
+                    fontSize: '0.9rem',
+                    opacity: 0.9
+                  }}>
+                    Incline
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g., 5%"
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem 1rem',
+                      borderRadius: '8px',
+                      border: 'none',
+                      fontSize: '1rem',
+                      backgroundColor: 'rgba(255,255,255,0.2)',
+                      color: 'white',
+                      outline: 'none',
+                      transition: 'all 0.3s ease'
+                    }}
+                    className="placeholder-light"
+                    value={this.state.incline}
+                    onChange={this.onChangeIncline}
+                    onFocus={(e) => e.target.style.backgroundColor = 'rgba(255,255,255,0.3)'}
+                    onBlur={(e) => e.target.style.backgroundColor = 'rgba(255,255,255,0.2)'}
+                  />
+                </div>
+                <div>
+                  <label style={{ 
+                    display: 'block', 
+                    marginBottom: '0.5rem', 
+                    fontWeight: '500',
+                    fontSize: '0.9rem',
+                    opacity: 0.9
+                  }}>
+                    Distance
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g., 5km"
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem 1rem',
+                      borderRadius: '8px',
+                      border: 'none',
+                      fontSize: '1rem',
+                      backgroundColor: 'rgba(255,255,255,0.2)',
+                      color: 'white',
+                      outline: 'none',
+                      transition: 'all 0.3s ease'
+                    }}
+                    className="placeholder-light"
+                    value={this.state.distance}
+                    onChange={this.onChangeDistance}
+                    onFocus={(e) => e.target.style.backgroundColor = 'rgba(255,255,255,0.3)'}
+                    onBlur={(e) => e.target.style.backgroundColor = 'rgba(255,255,255,0.2)'}
+                  />
+                </div>
+                <div>
+                  <label style={{ 
+                    display: 'block', 
+                    marginBottom: '0.5rem', 
+                    fontWeight: '500',
+                    fontSize: '0.9rem',
+                    opacity: 0.9
+                  }}>
+                    Speed
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g., 10 km/h"
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem 1rem',
+                      borderRadius: '8px',
+                      border: 'none',
+                      fontSize: '1rem',
+                      backgroundColor: 'rgba(255,255,255,0.2)',
+                      color: 'white',
+                      outline: 'none',
+                      transition: 'all 0.3s ease'
+                    }}
+                    className="placeholder-light"
+                    value={this.state.speed}
+                    onChange={this.onChangeSpeed}
+                    onFocus={(e) => e.target.style.backgroundColor = 'rgba(255,255,255,0.3)'}
+                    onBlur={(e) => e.target.style.backgroundColor = 'rgba(255,255,255,0.2)'}
+                  />
+                </div>
+                <div>
+                  <label style={{ 
+                    display: 'block', 
+                    marginBottom: '0.5rem', 
+                    fontWeight: '500',
+                    fontSize: '0.9rem',
+                    opacity: 0.9
+                  }}>
+                    Time
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g., 30 min"
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem 1rem',
+                      borderRadius: '8px',
+                      border: 'none',
+                      fontSize: '1rem',
+                      backgroundColor: 'rgba(255,255,255,0.2)',
+                      color: 'white',
+                      outline: 'none',
+                      transition: 'all 0.3s ease'
+                    }}
+                    className="placeholder-light"
+                    value={this.state.time}
+                    onChange={this.onChangeTime}
+                    onFocus={(e) => e.target.style.backgroundColor = 'rgba(255,255,255,0.3)'}
+                    onBlur={(e) => e.target.style.backgroundColor = 'rgba(255,255,255,0.2)'}
+                  />
+                </div>
               </div>
-              <div className="form-group">
-                <label>Distance: </label>
-                <input
-                  type="string"
-                  className="form-control"
-                  value={this.state.distance}
-                  onChange={this.onChangeDistance}
-                />
-              </div>
-              <div className="form-group">
-                <label>Speed: </label>
-                <input
-                  type="string"
-                  className="form-control"
-                  value={this.state.speed}
-                  onChange={this.onChangeSpeed}
-                />
-              </div>
-              <div className="form-group">
-                <label>Time: </label>
-                <input
-                  type="string"
-                  className="form-control"
-                  value={this.state.time}
-                  onChange={this.onChangeTime}
-                />
-              </div>
-            </>
+            </div>
           )}
           {this.state.workoutType === 'strengthExercises' && (
-            <>
+            <div style={{
+              background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
+              padding: '1.5rem',
+              borderRadius: '12px',
+              marginBottom: '1.5rem',
+              color: 'white'
+            }}>
+              <h4 style={{ margin: '0 0 1rem 0', fontSize: '1.2rem', fontWeight: '600' }}>
+                Strength Details
+              </h4>
               {this.state.sets.map((set, index) => (
-                <div key={index} className="form-group">
-                  <label>Set {index + 1}</label>
-                  <div>
-                    <input
-                      type="string"
-                      placeholder="Weight"
-                      className="form-control"
-                      value={set.weight}
-                      onChange={e => this.onChangeSet(index, 'weight', e.target.value)}
-                    />
-                    <input
-                      type="string"
-                      placeholder="Reps"
-                      className="form-control"
-                      value={set.reps}
-                      onChange={e => this.onChangeSet(index, 'reps', e.target.value)}
-                    />
-                    <button className="customBtn" type="button" onClick={() => this.onRemoveSet(index)}>Remove</button>
+                <div key={index} style={{ 
+                  marginBottom: '1rem',
+                  background: 'rgba(255,255,255,0.1)',
+                  padding: '1rem',
+                  borderRadius: '8px'
+                }}>
+                  <label style={{ 
+                    display: 'block', 
+                    marginBottom: '0.5rem', 
+                    fontWeight: '500',
+                    fontSize: '0.9rem',
+                    opacity: 0.9
+                  }}>
+                    Set {index + 1}
+                  </label>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr auto', gap: '0.5rem', alignItems: 'end' }}>
+                    <div>
+                      <input
+                        type="text"
+                        name="weight"
+                        placeholder="Weight (kg)"
+                        style={{
+                          width: '100%',
+                          padding: '0.75rem 1rem',
+                          borderRadius: '8px',
+                          border: 'none',
+                          fontSize: '1rem',
+                          backgroundColor: 'rgba(255,255,255,0.2)',
+                          color: 'white',
+                          outline: 'none',
+                          transition: 'all 0.3s ease'
+                        }}
+                        className="placeholder-light"
+                        value={set.weight}
+                        onChange={e => this.onChangeSet(index, 'weight', e.target.value)}
+                        onFocus={(e) => e.target.style.backgroundColor = 'rgba(255,255,255,0.3)'}
+                        onBlur={(e) => e.target.style.backgroundColor = 'rgba(255,255,255,0.2)'}
+                      />
+                    </div>
+                    <div>
+                      <input
+                        type="text"
+                        name="reps"
+                        placeholder="Reps"
+                        style={{
+                          width: '100%',
+                          padding: '0.75rem 1rem',
+                          borderRadius: '8px',
+                          border: 'none',
+                          fontSize: '1rem',
+                          backgroundColor: 'rgba(255,255,255,0.2)',
+                          color: 'white',
+                          outline: 'none',
+                          transition: 'all 0.3s ease'
+                        }}
+                        className="placeholder-light"
+                        value={set.reps}
+                        onChange={e => this.onChangeSet(index, 'reps', e.target.value)}
+                        onFocus={(e) => e.target.style.backgroundColor = 'rgba(255,255,255,0.3)'}
+                        onBlur={(e) => e.target.style.backgroundColor = 'rgba(255,255,255,0.2)'}
+                      />
+                    </div>
+                    <button 
+                      type="button" 
+                      onClick={() => this.onRemoveSet(index)}
+                      style={{
+                        background: 'rgba(255,255,255,0.2)',
+                        border: '1px solid rgba(255,255,255,0.3)',
+                        color: 'white',
+                        padding: '0.75rem 1rem',
+                        borderRadius: '8px',
+                        cursor: 'pointer',
+                        fontSize: '0.9rem',
+                        fontWeight: '500',
+                        transition: 'all 0.3s ease'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.background = 'rgba(255,255,255,0.3)';
+                        e.target.style.transform = 'translateY(-2px)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.background = 'rgba(255,255,255,0.2)';
+                        e.target.style.transform = 'translateY(0)';
+                      }}
+                    >
+                      ×
+                    </button>
                   </div>
                 </div>
               ))}
-              <button className="customBtn" type="button" onClick={this.onAddSet}>Add Set</button>
-            </>
+              <button 
+                type="button" 
+                onClick={this.onAddSet}
+                style={{
+                  background: 'rgba(255,255,255,0.2)',
+                  border: '1px solid rgba(255,255,255,0.3)',
+                  color: 'white',
+                  padding: '0.75rem 1.5rem',
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                  fontSize: '1rem',
+                  fontWeight: '500',
+                  transition: 'all 0.3s ease',
+                  width: '100%'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.background = 'rgba(255,255,255,0.3)';
+                  e.target.style.transform = 'translateY(-2px)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.background = 'rgba(255,255,255,0.2)';
+                  e.target.style.transform = 'translateY(0)';
+                }}
+              >
+                Add Set
+              </button>
+            </div>
           )}
-          <div className="form-group" style={{ marginTop: '20px' }}>
-            <input  type="submit" value="Edit Exercise Log" className="customBtn" />
+          
+          <div style={{ textAlign: 'center' }}>
+            <button 
+              type="submit" 
+              style={{
+                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                color: 'white',
+                border: 'none',
+                padding: '1rem 2rem',
+                borderRadius: '12px',
+                fontSize: '1.1rem',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                boxShadow: '0 10px 30px rgba(102, 126, 234, 0.3)',
+                minWidth: '200px'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.transform = 'translateY(-3px)';
+                e.target.style.boxShadow = '0 15px 40px rgba(102, 126, 234, 0.4)';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.transform = 'translateY(0)';
+                e.target.style.boxShadow = '0 10px 30px rgba(102, 126, 234, 0.3)';
+              }}
+            >
+              Update Exercise Log
+            </button>
           </div>
         </form>
       </div>
