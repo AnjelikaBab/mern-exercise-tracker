@@ -21,7 +21,7 @@ app.use(cors({
 app.use(express.json());
 
 //database uri, recieved from moongoDB dashboard. Starts connection
-const uri = process.env.ATLAS_URI;
+const uri = process.env.MONGODB_URI || process.env.ATLAS_URI;
 mongoose.connect(uri);
 const connection = mongoose.connection;
 connection.once('open', () => {
